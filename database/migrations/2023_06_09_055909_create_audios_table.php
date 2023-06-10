@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('audios', function (Blueprint $table) {
             $table->id();
             $table->foreignId("room_id")->constrained()->onDelete("cascade");
+            $table->integer("slot");
             $table->string("name");
             $table->string("file");
             $table->float("initial_volume")->default(0.5);
