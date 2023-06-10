@@ -18,5 +18,5 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('audio', function ($user) {
-    return true; // Adjust the authorization logic as per your requirements
+    return ['id' => $user->id, 'name' => $user->name];
 });

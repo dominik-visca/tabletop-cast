@@ -27,7 +27,7 @@ class AudioEvent implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return new Channel("audio");
+        return new PresenceChannel("audio");
     }
 
     public function broadcastAs()

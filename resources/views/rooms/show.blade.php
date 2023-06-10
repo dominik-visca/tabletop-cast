@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __($room->name) }}
+            {{ __($room->name) }} @livewire('user-counter')
         </h2>
     </x-slot>
 
@@ -28,7 +28,7 @@
 
                                 <!-- it seems, the audio element does not irritate the other elements -->
                                 @if(isset($audio))
-                                <audio style="display:none;" id="{{ $i }}" playsinline controls preload="auto" src="{{ Storage::url($audio->file) }}" {{ $audio->loop ? 'loop' : '' }}>
+                                <audio style="display:none;" id="audio-{{ $i }}" playsinline controls preload="auto" src="{{ Storage::url($audio->file) }}" {{ $audio->loop ? 'loop' : '' }}>
                                 </audio>
                                 @endif
 
@@ -89,24 +89,34 @@
             });
         });
 
-        // Repeat for stop buttons and volume sliders.
-        // For volume sliders, you would also pass the volume level in the request.
-
         window.onload = function() {
-            console.log("loaded")
-            Echo.channel('audio')
+            console.log("Load WebSocket connection")
+            Echo.join('audio')
+                .here((users) => {
+                    Livewire.emit('refreshUserCount');
+                })
+                .joining((user) => {
+                    console.log(user.name + ' joined');
+                    Livewire.emit('refreshUserCount');
+                })
+                .leaving((user) => {
+                    console.log(user.name + ' left');
+                    Livewire.emit('refreshUserCount');
+                })
                 .listen('.AudioEvent', (e) => {
-                    console.log(e);
-                    let audioElement = document.getElementById(e.slot);
-
                     if (e.action === 'play') {
-                        audioElement.play();
+                        let audioElement = document.getElementById('audio-' + e.slot);
+                        if (audioElement) audioElement.play();
                     } else if (e.action === 'stop') {
-                        audioElement.pause();
+                        let audioElement = document.getElementById('audio-' + e.slot);
+                        if (audioElement) audioElement.pause();
                     } else if (e.action === 'volume') {
-                        // Change volume of audio in e.slot to e.volume
+                        let audioElement = document.getElementById('audio-' + e.slot);
+                        if (audioElement) audioElement.volume = e.volume;
                     }
                 });
+
+            console.log("WebSocket connection ready")
         }
     </script>
 
