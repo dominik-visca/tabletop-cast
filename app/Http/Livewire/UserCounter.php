@@ -19,7 +19,7 @@ class UserCounter extends Component
 
     public function fetchUserCount()
     {
-        $pusher = new Pusher("app-key", "app-secret", "app-id", ["cluster" => "mt1", "scheme" => "http", "host" => "soketi", "port" => 6001]);
+        $pusher = new Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), ["cluster" => env('PUSHER_APP_CLUSTER'), "scheme" => env('PUSHER_SCHEME'), "host" => env('PUSHER_HOST'), "port" => env('PUSHER_PORT')]);
         $info = $pusher->getChannelInfo('presence-audio', ['info' => 'subscription_count']);
 
         $this->usersCount = $info->user_count;

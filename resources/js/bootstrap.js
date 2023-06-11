@@ -21,39 +21,19 @@ import Echo from "laravel-echo";
 import Pusher from "pusher-js";
 window.Pusher = Pusher;
 
-// // USING PUSHER
-// window.Echo = new Echo({
-//     broadcaster: "pusher",
-//     key: import.meta.env.VITE_PUSHER_APP_KEY,
-//     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-//     forceTLS: true,
-// });
+console.log(import.meta.env.VITE_PUSHER_PORT);
 
-// USING SOKETI
 window.Echo = new Echo({
     broadcaster: "pusher",
-    key: "app-key",
-    id: "app-id",
-    secret: "app-secret",
-    wsHost: "127.0.0.1",
-    wsPort: 6001,
-    wssPort: 6001,
+    key: import.meta.env.VITE_PUSHER_APP_KEY,
+    id: import.meta.env.VITE_PUSHER_APP_ID,
+    secret: import.meta.env.VITE_PUSHER_APP_SECRET,
+    wsHost: import.meta.env.VITE_PUSHER_HOST_FROM_CLIENT,
+    wsPort: import.meta.env.VITE_PUSHER_PORT,
+    wssPort: import.meta.env.VITE_PUSHER_PORT,
     forceTLS: false,
     encrypted: true,
     disableStats: true,
     enabledTransports: ["ws", "wss"],
-    cluster: "mt1",
+    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
 });
-
-// window.Echo = new Echo({
-//     broadcaster: "pusher",
-//     key: "591c80b38033e4ea65a3",
-//     //wsHost: "soketi",
-//     //wsPort: 6001,
-//     //wssPort: 6001,
-//     forceTLS: false,
-//     encrypted: true,
-//     disabledStats: true,
-//     enabledTransports: ["ws", "wss"],
-//     cluster: "soketi",
-// });
