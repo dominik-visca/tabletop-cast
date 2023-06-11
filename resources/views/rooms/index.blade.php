@@ -65,11 +65,11 @@
                                         </div>
                                     </div>
 
-                                    <div class="sm:col-span-6">
+                                    <div class="hidden sm:col-span-6">
                                         <label for="password" class="block text-sm font-medium leading-6 text-white">Passwort</label>
                                         <div class="mt-2">
                                             <div class="flex rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
-                                                <input type="text" name="password" id="password" autocomplete="password" class="flex-1 border-0 bg-transparent py-1.5 pl-1 text-white focus:ring-0 sm:text-sm sm:leading-6" placeholder="Name">
+                                                <input type="text" name="password" id="password" value="not-implemented" class="flex-1 border-0 bg-transparent py-1.5 pl-1 text-white focus:ring-0 sm:text-sm sm:leading-6" placeholder="Password">
                                             </div>
                                         </div>
                                     </div>
@@ -83,6 +83,12 @@
                                 Raum erstellen
                             </button>
                         </div>
+
+                        @if($errors->has('name'))
+                        <div class="alert alert-danger text-red-500">
+                            {{ $errors->first('name') }}
+                        </div>
+                        @endif
                     </form>
                 </div>
             </div>

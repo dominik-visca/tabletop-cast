@@ -52,14 +52,16 @@ class RoomController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $slug = Str::slug($request->name);
+
         $request->validate([
-            "name" => "required",
+            "name" => "required|unique:rooms,slug,$slug",
             "password" => "required"
         ]);
 
         Room::create([
             "name" => $request->name,
-            "slug" => Str::slug($request->name),
+            "slug" => $slug,
             "password" => Hash::make($request->password),
         ]);
 
@@ -78,28 +80,8 @@ class RoomController extends Controller
 
     public function update(Request $request, Room $room): RedirectResponse
     {
-        // Update room name
         $room->name = $request->input('name');
         $room->save();
-
-        // // Loop through the uploaded audio files
-        // for ($i = 1; $i <= 30; $i++) {
-        //     $audioFile = $request->file('audio_' . $i);
-
-        //     // If an audio file was uploaded, process it
-        //     if ($audioFile) {
-        //         $fileName = $audioFile->store('audios', 'public');
-
-        //         // Create a new Audio model instance and save it
-        //         $audio = new Audio();
-        //         $audio->room_id = $room->id;
-        //         $audio->name = 'Audio ' . $i;
-        //         $audio->file = $fileName;
-        //         $audio->initial_volume = $request->input('initial_volume_' . $i) ?? 0.5;
-        //         $audio->loop = $request->input('loop_' . $i) ?? false;
-        //         $audio->save();
-        //     }
-        // }
 
         return redirect()->route('rooms.show', ['room' => $room]);
     }
