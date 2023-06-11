@@ -37,7 +37,7 @@
                                     </button>
 
                                     <!-- it seems, the audio element here does not irritate the other elements -->
-                                    <audio style="display:none;" id="audio-{{ $i }}" playsinline controls preload="auto" onended="getElementById('audio-' + {{ $i }}).parentElement.parentElement.classList.toggle('play')" src="{{ Storage::url($audio->file) }}" {{ $audio->loop ? 'loop' : '' }}>
+                                    <audio style="display:none;" id="audio-{{ $i }}" playsinline controls preload="auto" data-initial-volume="{{$audio->initial_volume}}" onended="getElementById('audio-' + {{ $i }}).parentElement.parentElement.classList.toggle('play')" src="{{ Storage::url($audio->file) }}" {{ $audio->loop ? 'loop' : '' }}>
                                     </audio>
 
 
@@ -52,7 +52,7 @@
                                     </div>
                                 </div>
 
-                                <input id="volume-{{ $i }}" data-slot="{{ $i }}" class="volume-slider w-full dark:bg-gray-900 dark:border-gray-900 border-2" type="range" min="1" max="100" value="50">
+                                <input id="volume-{{ $i }}" data-slot="{{ $i }}" class="volume-slider w-full dark:bg-gray-900 dark:border-gray-900 border-2" type="range" min="1" max="100" value="{{ $audio->initial_volume * 100}}">
 
                                 <div>
                                 </div>
@@ -200,6 +200,14 @@
         });
 
         window.onload = function() {
+            console.log("Setting initial volumes")
+            let audioElements = document.querySelectorAll("audio");
+
+            audioElements.forEach(audioElement => {
+                let initialVolume = audioElement.getAttribute("data-initial-volume");
+                audioElement.volume = Number(initialVolume);
+            })
+
             console.log("Loading WebSocket connection")
 
             Echo.join('audio')
