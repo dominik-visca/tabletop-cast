@@ -15,11 +15,11 @@
 
                         @for($i = 1; $i <= 27; $i++) @php $audio=$room->audios->where('slot', $i)->first();
                             @endphp
-                            @if(isset($audio))<li class="col-span-1 rounded-lg dark:bg-gray-700 bg-white shadow stop">
+                            @if(isset($audio))<li class="col-span-1 rounded-lg dark:bg-gray-700 bg-white shadow">
 
                                 <div class="flex w-full items-center justify-between space-x-6 p-3">
 
-                                    <button data-slot="{{ $i }}" class="play-button play h-12 w-12 bg-gray-900 items-center justify-center flex rounded">
+                                    <button data-action="stop" data-slot="{{ $i }}" class="audio-control-button {{ $audio->pausable ? 'pausable' : '' }} h-12 w-12 bg-gray-900 items-center justify-center flex rounded">
                                         @if($audio->ambience)
                                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
                                             <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
@@ -38,14 +38,8 @@
                                         @endif
                                     </button>
 
-                                    <button data-slot="{{ $i }}" class="stop-button stop h-12 w-12 bg-gray-900 items-center justify-center flex rounded">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-stop" viewBox="0 0 16 16">
-                                            <path d="M3.5 5A1.5 1.5 0 0 1 5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5zM5 4.5a.5.5 0 0 0-.5.5v6a.5.5 0 0 0 .5.5h6a.5.5 0 0 0 .5-.5V5a.5.5 0 0 0-.5-.5H5z" />
-                                        </svg>
-                                    </button>
-
                                     <!-- it seems, the audio element here does not irritate the other elements -->
-                                    <audio style="display:none;" id="audio-{{ $i }}" playsinline controls preload="auto" onended="getElementById('audio-' + {{ $i }}).parentElement.parentElement.classList.toggle('play')" class="{{ $audio->pausable ? 'pausable' : '' }}" src="{{ Storage::url($audio->file) }}" {{ $audio->loop ? 'loop' : '' }}>
+                                    <audio style="display:none;" id="audio-{{ $i }}" playsinline controls preload="auto" onended="getElementById('audio-' + {{ $i }}).parentElement.parentElement.classList.toggle('play')" src="{{ Storage::url($audio->file) }}" {{ $audio->loop ? 'loop' : '' }}>
                                     </audio>
 
 
@@ -117,41 +111,52 @@
         </div>
     </div>
     <script>
-        // When a play button is clicked...
-        document.querySelectorAll('.play-button').forEach((button) => {
-            button.addEventListener('click', function() {
-                // Determine the slot number of the audio file.
-                var slot = this.dataset.slot;
-                // Send a AJAX request to the backend.
-                axios.post('/audio/action', {
-                    action: 'play',
-                    slot: slot,
-                    // Include a CSRF token for security.
-                    _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                }).catch(function(error) {
-                    console.log(error);
-                });
-            });
-        });
+        playSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-play" viewBox="0 0 16 16">
+                        <path d="M10.804 8 5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z"/>
+                    </svg>`;
+        pauseSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-pause" viewBox="0 0 16 16">
+                        <path d="M6 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5zm4 0a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
+                    </svg>`;
+        stopSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-stop" viewBox="0 0 16 16">
+                        <path d="M3.5 5A1.5 1.5 0 0 1 5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5zM5 4.5a.5.5 0 0 0-.5.5v6a.5.5 0 0 0 .5.5h6a.5.5 0 0 0 .5-.5V5a.5.5 0 0 0-.5-.5H5z"/>
+                    </svg>`;
 
-        document.querySelectorAll('.stop-button').forEach((button) => {
+        document.querySelectorAll('.audio-control-button').forEach((button) => {
             button.addEventListener('click', function() {
-                // Determine the slot number of the audio file.
-                var slot = this.dataset.slot;
-                // Send a AJAX request to the backend.
-                axios.post('/audio/action', {
-                    action: 'stop',
-                    slot: slot,
-                    // Include a CSRF token for security.
-                    _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                }).catch(function(error) {
-                    console.log(error);
-                });
-            });
+                var buttonElement = this;
+                var slot = buttonElement.dataset.slot;
+                var action = buttonElement.dataset.action;
+
+                // Determine the action based on the current state
+                var nextAction;
+                if (action === "play" && buttonElement.classList.contains("pausable")) {
+                    nextAction = "pause";
+                } else if (action === "play" && !buttonElement.classList.contains("pausable")) {
+                    nextAction = "stop";
+                } else {
+                    nextAction = "play"
+                }
+
+                if (nextAction) {
+                    // Send AJAX request to the backend
+                    axios.post("/audio/action", {
+                        action: nextAction,
+                        slot: slot,
+                        _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    }).catch(function(error) {
+                        console.log(error);
+                    });
+
+                    // Update the state of the button
+                    buttonElement.dataset.action = nextAction;
+                }
+            })
+
         });
 
         window.onload = function() {
-            console.log("Load WebSocket connection")
+            console.log("Loading WebSocket connection")
+
             Echo.join('audio')
                 .here((users) => {
                     Livewire.emit('refreshUserCount');
@@ -166,17 +171,25 @@
                 })
                 .listen('.AudioEvent', (e) => {
                     let audioElement = document.getElementById('audio-' + e.slot);
+                    let button = audioElement.previousElementSibling
+
                     if (e.action === 'play') {
                         audioElement.play();
-                        audioElement.parentElement.parentElement.classList.toggle("stop")
                         audioElement.parentElement.parentElement.classList.toggle("play")
+                        if (audioElement.classList.contains('pausable')) {
+                            button.innerHTML = pauseSvg;
+                        } else {
+                            button.innerHTML = stopSvg;
+                        }
+                    } else if (e.action === "pause") {
+                        audioElement.pause();
+                        audioElement.parentElement.parentElement.classList.toggle("play")
+                        button.innerHTML = playSvg;
                     } else if (e.action === 'stop') {
                         audioElement.pause();
-                        if (!audioElement.classList.contains("pausable")) {
-                            audioElement.currentTime = 0
-                        }
-                        audioElement.parentElement.parentElement.classList.toggle("stop")
+                        audioElement.currentTime = 0;
                         audioElement.parentElement.parentElement.classList.toggle("play")
+                        button.innerHTML = playSvg;
 
                     } else if (e.action === 'volume') {
                         audioElement.volume = e.volume;
@@ -186,6 +199,4 @@
             console.log("WebSocket connection ready")
         }
     </script>
-
-
 </x-app-layout>
