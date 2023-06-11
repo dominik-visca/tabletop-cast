@@ -52,7 +52,7 @@
                                     </div>
                                 </div>
 
-                                <input class="w-full dark:bg-gray-900 dark:border-gray-900 border-2" type="range" min="1" max="100" value="50" class="slider" id="myRange">
+                                <input id="volume-{{ $i }}" data-slot="{{ $i }}" class="volume-slider w-full dark:bg-gray-900 dark:border-gray-900 border-2" type="range" min="1" max="100" value="50">
 
                                 <div>
                                 </div>
@@ -148,7 +148,9 @@
 
         function processVolume(e) {
             let audioElement = document.getElementById('audio-' + e.slot);
+            let volumeSlider = document.getElementById('volume-' + e.slot);
             audioElement.volume = e.volume;
+            volumeSlider.value = e.volume * 100;
         }
 
         document.querySelectorAll('.audio-control-button').forEach((button) => {
@@ -179,6 +181,22 @@
                 }
             })
 
+        });
+
+        document.querySelectorAll('.volume-slider').forEach((slider) => {
+            slider.addEventListener('change', function() {
+                const sliderElement = this;
+                const slot = sliderElement.dataset.slot;
+
+                axios.post("/audio/action", {
+                    action: "volume",
+                    volume: sliderElement.value / 100,
+                    slot: slot,
+                    _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                }).catch(function(error) {
+                    console.log(error);
+                });
+            })
         });
 
         window.onload = function() {
