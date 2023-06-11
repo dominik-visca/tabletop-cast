@@ -9,35 +9,3 @@ input[type=range] {
 .play {
     background-color: #064e3b !important;
 }
-
-.play button.play {
-    display: none;
-}
-
-.play button.pause {
-    display: none;
-}
-
-.play button.stop {
-    display: block;
-}
-
-.play.pausable button.pause {
-    display: block;
-}
-
-.play.pausable button.stop {
-    display: none;
-}
-
-.stop button.stop {
-    display: none;
-}
-
-.stop button.pause {
-    display: none;
-}
-
-.stop button.play {
-    display: block;
-}
