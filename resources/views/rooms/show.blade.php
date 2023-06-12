@@ -32,14 +32,14 @@
         </div>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-7">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div id="audio-list" class="hidden p-6 text-gray-900 dark:text-gray-100">
+                <div id="audio-list" class="hidden p-2 text-gray-900 dark:text-gray-100">
 
                     <!-- Audio List -->
                     <ul role="list"
-                        class="px-4 sm:px-6 lg:px-8 mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        class="px-4 sm:px-6 lg:px-8 my-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 
                         @for ($i = 1; $i <= 27; $i++)
                             @php
