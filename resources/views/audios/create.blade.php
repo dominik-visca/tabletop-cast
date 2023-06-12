@@ -1,8 +1,16 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Audiofeld anlegen' ) }}
-        </h2>
+        <div class="ml-4 mt-4">
+            <div class="flex items-center">
+                <div class="ml-4">
+                    <p class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                        {{ __('Audiofeld anlegen') }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="ml-4 mt-4 flex flex-shrink-0">
+        </div>
     </x-slot>
 
     <div class="py-12">

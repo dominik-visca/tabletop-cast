@@ -24,11 +24,11 @@
 
         <!-- Page Heading -->
         @if (isset($header))
-        <header class="bg-white dark:bg-gray-800 shadow">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <div class="bg-white dark:bg-gray-800 shadow px-4 py-5 sm:px-6">
+            <div class="-ml-4 -mt-4 flex flex-wrap items-center justify-between sm:flex-nowrap">
                 {{ $header }}
             </div>
-        </header>
+        </div>
         @endif
 
         <!-- Page Content -->
