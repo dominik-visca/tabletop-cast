@@ -41,8 +41,10 @@
                     <ul role="list"
                         class="px-4 sm:px-6 lg:px-8 mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 
-                        @for ($i = 1; $i <= 27; $i++) @php$audio = $room->audios->where('slot', $i)->first();
-                                                @endphp ?>
+                        @for ($i = 1; $i <= 27; $i++)
+                            @php
+                                $audio = $room->audios->where('slot', $i)->first();
+                            @endphp ?>
                             @if (isset($audio))
                                 <li class="col-span-1 rounded-lg dark:bg-gray-700 bg-white shadow">
 
