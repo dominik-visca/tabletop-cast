@@ -25,7 +25,7 @@
         <!-- Page Heading -->
         @if (isset($header))
             <div class="bg-white dark:bg-gray-800 shadow px-4 py-5 sm:px-6">
-                <div class="-ml-4 -mt-4 flex flex-wrap items-center justify-between sm:flex-nowrap">
+                <div class="-ml-4 -mt-4 flex flex-wrap items-center justify-center sm:flex-nowrap">
                     {{ $header }}
                 </div>
             </div>

@@ -9,3 +9,18 @@ input[type=range] {
 .play {
     background-color: #064e3b !important;
 }
+
+.soundpad {
+    display: none;
+    animation: fadein .5s;
+}
+
+@keyframes fadein {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

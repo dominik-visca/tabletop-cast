@@ -1,6 +1,7 @@
 <x-app-layout>
     <x-sprite-sheet />
     <x-slot name="header">
+
         <div class="ml-4 mt-4">
             <div class="flex items-center">
                 <div class="ml-4">
@@ -11,7 +12,7 @@
             </div>
         </div>
         <div class="ml-4 mt-4 flex flex-shrink-0">
-            <button onclick="document.getElementById('audio-list').classList.toggle('hidden')" type="button"
+            <button onclick="toggleGmMenu()" type="button"
                 class="relative ml-3 inline-flex items-center rounded-md bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="-ml-0.5 mr-1.5 h-5 w-5 text-gray-400" viewBox="0 0 16 16">
@@ -20,6 +21,24 @@
                 </svg>
                 <span>SL-Ansicht</span>
             </button>
+            <div id="soundpad-menu" class="hidden">
+                <input class="hidden" id="one" name="group" type="radio" checked>
+                <input class="hidden" id="two" name="group" type="radio">
+                <input class="hidden" id="three" name="group" type="radio">
+                <div>
+                    <label
+                        class="relative ml-3 inline-flex items-center rounded-md bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
+                        id="one-tab" for="one">1</label>
+                    <label
+                        class="relative ml-3 inline-flex items-center rounded-md bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
+                        id="two-tab" for="two">2</label>
+                    <label
+                        class="relative ml-3 inline-flex items-center rounded-md bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
+                        id="three-tab" for="three">3</label>
+                </div>
+            </div>
+
+
             <button type="button"
                 class="relative ml-3 inline-flex items-center rounded-md bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -29,7 +48,9 @@
                 </svg>
                 @livewire('user-counter', ['roomSlug' => $room->slug])
             </button>
+
         </div>
+
     </x-slot>
 
     <div class="py-7">
@@ -37,110 +58,345 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div id="audio-list" class="hidden p-2 text-gray-900 dark:text-gray-100">
 
-                    <!-- Audio List -->
-                    <ul role="list"
-                        class="px-4 sm:px-6 lg:px-8 my-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    <div id="soundpad-one" class="soundpad ">
 
-                        @for ($i = 1; $i <= 27; $i++)
-                            @php
-                                $audio = $room->audios->where('slot', $i)->first();
-                            @endphp
-                            @if (isset($audio))
-                                <li class="col-span-1 rounded-t-lg dark:bg-gray-700 bg-white shadow">
+                        <!-- Audio List -->
+                        <ul role="list"
+                            class="px-4 sm:px-6 lg:px-8 my-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 
-                                    <div class="flex w-full items-center justify-between space-x-6 p-3">
+                            @for ($i = 1; $i <= 27; $i++)
+                                @php
+                                    $audio = $room->audios->where('slot', $i)->first();
+                                @endphp
+                                @if (isset($audio))
+                                    <li class="col-span-1 rounded-t-lg dark:bg-gray-700 bg-white shadow">
 
-                                        <button data-action="stop" data-slot="{{ $i }}"
-                                            data-type="{{ $audio->ambience ? 'ambience' : ($audio->music ? 'music' : 'normal') }}"
-                                            class="audio-control-button {{ $audio->pausable ? 'pausable' : '' }} h-12 w-12 bg-gray-900 items-center justify-center flex rounded">
-                                            @if ($audio->ambience)
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                                                    fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
-                                                    <use href="#playSvgAmbience"></use>
-                                                </svg>
-                                            @elseif($audio->music)
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                                                    fill="currentColor" class="bi bi-music-note-beamed"
-                                                    viewBox="0 0 16 16">
-                                                    <use href="#playSvgMusic"></use>
-                                                </svg>
-                                            @else
+                                        <div class="flex w-full items-center justify-between space-x-6 p-3">
+
+                                            <button data-action="stop" data-slot="{{ $i }}"
+                                                data-type="{{ $audio->ambience ? 'ambience' : ($audio->music ? 'music' : 'normal') }}"
+                                                class="audio-control-button {{ $audio->pausable ? 'pausable' : '' }} h-12 w-12 bg-gray-900 items-center justify-center flex rounded">
+                                                @if ($audio->ambience)
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="32"
+                                                        height="32" fill="currentColor" class="bi bi-image"
+                                                        viewBox="0 0 16 16">
+                                                        <use href="#playSvgAmbience"></use>
+                                                    </svg>
+                                                @elseif($audio->music)
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="32"
+                                                        height="32" fill="currentColor"
+                                                        class="bi bi-music-note-beamed" viewBox="0 0 16 16">
+                                                        <use href="#playSvgMusic"></use>
+                                                    </svg>
+                                                @else
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="32"
+                                                        height="32" fill="currentColor" class="bi bi-play"
+                                                        viewBox="0 0 16 16">
+                                                        <use href="#playSvgNormal"></use>
+                                                    </svg>
+                                                @endif
+                                            </button>
+
+                                            <!-- it seems, the audio element here does not irritate the other elements -->
+                                            <audio style="display:none;" id="audio-{{ $i }}" playsinline
+                                                controls preload="auto"
+                                                data-type="{{ $audio->ambience ? 'ambience' : ($audio->music ? 'music' : 'normal') }}"
+                                                data-initial-volume="{{ $audio->initial_volume }}"
+                                                onended="getElementById('audio-' + {{ $i }}).parentElement.parentElement.classList.toggle('play')"
+                                                src="{{ Storage::url($audio->file) }}" {{ $audio->loop ? 'loop' : '' }}>
+                                            </audio>
+
+
+                                            <div class="flex-1 truncate">
+                                                <div class="flex items-center space-x-3">
+                                                    <h3
+                                                        class="truncate text-sm font-medium text-gray-800 dark:text-gray-200">
+                                                        {{ $audio->name }}</h3>
+                                                    @if ($audio->loop)
+                                                        <span
+                                                            class="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Loop</span>
+                                                    @endif
+                                                </div>
+                                                <p class="mt-1 truncate text-sm text-gray-700 dark:text-gray-400">
+                                                    <!-- Platzhalter -->
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <input id="volume-{{ $i }}" data-slot="{{ $i }}"
+                                            class="volume-slider w-full block dark:bg-gray-900 dark:border-gray-900 border-2"
+                                            type="range" min="1" max="100"
+                                            value="{{ $audio->initial_volume * 100 }}">
+
+                                        <!-- Progressbar -->
+                                        <div class="bg-emerald-700 w-0"
+                                            style="height: 6px; transition: width 0.2s linear">
+                                        </div>
+                                    </li>
+                                @elseif(!isset($audio))
+                                    <li class="col-span-1 rounded-lg dark:bg-gray-700 bg-white shadow opacity-25">
+
+                                        <div class="flex w-full items-center justify-between space-x-6 p-3">
+
+                                            <div data-slot="{{ $i }}"
+                                                class="play-button h-12 w-12 bg-gray-900 items-center justify-center flex rounded">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
                                                     fill="currentColor" class="bi bi-play" viewBox="0 0 16 16">
                                                     <use href="#playSvgNormal"></use>
                                                 </svg>
-                                            @endif
-                                        </button>
+                                            </div>
 
-                                        <!-- it seems, the audio element here does not irritate the other elements -->
-                                        <audio style="display:none;" id="audio-{{ $i }}" playsinline controls
-                                            preload="auto"
-                                            data-type="{{ $audio->ambience ? 'ambience' : ($audio->music ? 'music' : 'normal') }}"
-                                            data-initial-volume="{{ $audio->initial_volume }}"
-                                            onended="getElementById('audio-' + {{ $i }}).parentElement.parentElement.classList.toggle('play')"
-                                            src="{{ Storage::url($audio->file) }}" {{ $audio->loop ? 'loop' : '' }}>
-                                        </audio>
+                                            <div class="flex-1 truncate">
+                                                <div class="flex items-center space-x-3">
+                                                    <h3
+                                                        class="truncate text-sm font-medium text-gray-800 dark:text-gray-200">
+                                                    </h3>
+                                                </div>
+                                                <p class="mt-1 truncate text-sm text-gray-700 dark:text-gray-400">
+                                                    <!-- Platzhalter -->
+                                                </p>
+                                            </div>
+                                        </div>
 
+                                        <input class="w-full dark:bg-gray-900 dark:border-gray-900 border-2" disabled
+                                            type="range" min="1" max="100" value="50"
+                                            class="slider">
 
-                                        <div class="flex-1 truncate">
-                                            <div class="flex items-center space-x-3">
-                                                <h3
-                                                    class="truncate text-sm font-medium text-gray-800 dark:text-gray-200">
-                                                    {{ $audio->name }}</h3>
-                                                @if ($audio->loop)
-                                                    <span
-                                                        class="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Loop</span>
+                                        <div>
+                                        </div>
+                                    </li>
+                                @endif
+                            @endfor
+                        </ul>
+                    </div>
+
+                    <div id="soundpad-two" class="soundpad">
+
+                        <!-- Audio List -->
+                        <ul role="list"
+                            class="px-4 sm:px-6 lg:px-8 my-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+
+                            @for ($i = 28; $i <= 54; $i++)
+                                @php
+                                    $audio = $room->audios->where('slot', $i)->first();
+                                @endphp
+                                @if (isset($audio))
+                                    <li class="col-span-1 rounded-t-lg dark:bg-gray-700 bg-white shadow">
+
+                                        <div class="flex w-full items-center justify-between space-x-6 p-3">
+
+                                            <button data-action="stop" data-slot="{{ $i }}"
+                                                data-type="{{ $audio->ambience ? 'ambience' : ($audio->music ? 'music' : 'normal') }}"
+                                                class="audio-control-button {{ $audio->pausable ? 'pausable' : '' }} h-12 w-12 bg-gray-900 items-center justify-center flex rounded">
+                                                @if ($audio->ambience)
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="32"
+                                                        height="32" fill="currentColor" class="bi bi-image"
+                                                        viewBox="0 0 16 16">
+                                                        <use href="#playSvgAmbience"></use>
+                                                    </svg>
+                                                @elseif($audio->music)
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="32"
+                                                        height="32" fill="currentColor"
+                                                        class="bi bi-music-note-beamed" viewBox="0 0 16 16">
+                                                        <use href="#playSvgMusic"></use>
+                                                    </svg>
+                                                @else
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="32"
+                                                        height="32" fill="currentColor" class="bi bi-play"
+                                                        viewBox="0 0 16 16">
+                                                        <use href="#playSvgNormal"></use>
+                                                    </svg>
                                                 @endif
+                                            </button>
+
+                                            <!-- it seems, the audio element here does not irritate the other elements -->
+                                            <audio style="display:none;" id="audio-{{ $i }}" playsinline
+                                                controls preload="auto"
+                                                data-type="{{ $audio->ambience ? 'ambience' : ($audio->music ? 'music' : 'normal') }}"
+                                                data-initial-volume="{{ $audio->initial_volume }}"
+                                                onended="getElementById('audio-' + {{ $i }}).parentElement.parentElement.classList.toggle('play')"
+                                                src="{{ Storage::url($audio->file) }}"
+                                                {{ $audio->loop ? 'loop' : '' }}>
+                                            </audio>
+
+
+                                            <div class="flex-1 truncate">
+                                                <div class="flex items-center space-x-3">
+                                                    <h3
+                                                        class="truncate text-sm font-medium text-gray-800 dark:text-gray-200">
+                                                        {{ $audio->name }}</h3>
+                                                    @if ($audio->loop)
+                                                        <span
+                                                            class="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Loop</span>
+                                                    @endif
+                                                </div>
+                                                <p class="mt-1 truncate text-sm text-gray-700 dark:text-gray-400">
+                                                    <!-- Platzhalter -->
+                                                </p>
                                             </div>
-                                            <p class="mt-1 truncate text-sm text-gray-700 dark:text-gray-400">
-                                                <!-- Platzhalter -->
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <input id="volume-{{ $i }}" data-slot="{{ $i }}"
-                                        class="volume-slider w-full block dark:bg-gray-900 dark:border-gray-900 border-2"
-                                        type="range" min="1" max="100"
-                                        value="{{ $audio->initial_volume * 100 }}">
-
-                                    <!-- Progressbar -->
-                                    <div class="bg-emerald-700 w-0" style="height: 6px; transition: width 0.2s linear">
-                                    </div>
-                                </li>
-                            @elseif(!isset($audio))
-                                <li class="col-span-1 rounded-lg dark:bg-gray-700 bg-white shadow opacity-25">
-
-                                    <div class="flex w-full items-center justify-between space-x-6 p-3">
-
-                                        <div data-slot="{{ $i }}"
-                                            class="play-button h-12 w-12 bg-gray-900 items-center justify-center flex rounded">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                                                fill="currentColor" class="bi bi-play" viewBox="0 0 16 16">
-                                                <use href="#playSvgNormal"></use>
-                                            </svg>
                                         </div>
 
-                                        <div class="flex-1 truncate">
-                                            <div class="flex items-center space-x-3">
-                                                <h3
-                                                    class="truncate text-sm font-medium text-gray-800 dark:text-gray-200">
-                                                </h3>
+                                        <input id="volume-{{ $i }}" data-slot="{{ $i }}"
+                                            class="volume-slider w-full block dark:bg-gray-900 dark:border-gray-900 border-2"
+                                            type="range" min="1" max="100"
+                                            value="{{ $audio->initial_volume * 100 }}">
+
+                                        <!-- Progressbar -->
+                                        <div class="bg-emerald-700 w-0"
+                                            style="height: 6px; transition: width 0.2s linear">
+                                        </div>
+                                    </li>
+                                @elseif(!isset($audio))
+                                    <li class="col-span-1 rounded-lg dark:bg-gray-700 bg-white shadow opacity-25">
+
+                                        <div class="flex w-full items-center justify-between space-x-6 p-3">
+
+                                            <div data-slot="{{ $i }}"
+                                                class="play-button h-12 w-12 bg-gray-900 items-center justify-center flex rounded">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                                    fill="currentColor" class="bi bi-play" viewBox="0 0 16 16">
+                                                    <use href="#playSvgNormal"></use>
+                                                </svg>
                                             </div>
-                                            <p class="mt-1 truncate text-sm text-gray-700 dark:text-gray-400">
-                                                <!-- Platzhalter -->
-                                            </p>
+
+                                            <div class="flex-1 truncate">
+                                                <div class="flex items-center space-x-3">
+                                                    <h3
+                                                        class="truncate text-sm font-medium text-gray-800 dark:text-gray-200">
+                                                    </h3>
+                                                </div>
+                                                <p class="mt-1 truncate text-sm text-gray-700 dark:text-gray-400">
+                                                    <!-- Platzhalter -->
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <input class="w-full dark:bg-gray-900 dark:border-gray-900 border-2" disabled
-                                        type="range" min="1" max="100" value="50" class="slider">
+                                        <input class="w-full dark:bg-gray-900 dark:border-gray-900 border-2" disabled
+                                            type="range" min="1" max="100" value="50"
+                                            class="slider">
 
-                                    <div>
-                                    </div>
-                                </li>
-                            @endif
-                        @endfor
-                    </ul>
+                                        <div>
+                                        </div>
+                                    </li>
+                                @endif
+                            @endfor
+                        </ul>
+                    </div>
+
+                    <div id="soundpad-three" class="soundpad">
+
+                        <!-- Audio List -->
+                        <ul role="list"
+                            class="px-4 sm:px-6 lg:px-8 my-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+
+                            @for ($i = 55; $i <= 81; $i++)
+                                @php
+                                    $audio = $room->audios->where('slot', $i)->first();
+                                @endphp
+                                @if (isset($audio))
+                                    <li class="col-span-1 rounded-t-lg dark:bg-gray-700 bg-white shadow">
+
+                                        <div class="flex w-full items-center justify-between space-x-6 p-3">
+
+                                            <button data-action="stop" data-slot="{{ $i }}"
+                                                data-type="{{ $audio->ambience ? 'ambience' : ($audio->music ? 'music' : 'normal') }}"
+                                                class="audio-control-button {{ $audio->pausable ? 'pausable' : '' }} h-12 w-12 bg-gray-900 items-center justify-center flex rounded">
+                                                @if ($audio->ambience)
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="32"
+                                                        height="32" fill="currentColor" class="bi bi-image"
+                                                        viewBox="0 0 16 16">
+                                                        <use href="#playSvgAmbience"></use>
+                                                    </svg>
+                                                @elseif($audio->music)
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="32"
+                                                        height="32" fill="currentColor"
+                                                        class="bi bi-music-note-beamed" viewBox="0 0 16 16">
+                                                        <use href="#playSvgMusic"></use>
+                                                    </svg>
+                                                @else
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="32"
+                                                        height="32" fill="currentColor" class="bi bi-play"
+                                                        viewBox="0 0 16 16">
+                                                        <use href="#playSvgNormal"></use>
+                                                    </svg>
+                                                @endif
+                                            </button>
+
+                                            <!-- it seems, the audio element here does not irritate the other elements -->
+                                            <audio style="display:none;" id="audio-{{ $i }}" playsinline
+                                                controls preload="auto"
+                                                data-type="{{ $audio->ambience ? 'ambience' : ($audio->music ? 'music' : 'normal') }}"
+                                                data-initial-volume="{{ $audio->initial_volume }}"
+                                                onended="getElementById('audio-' + {{ $i }}).parentElement.parentElement.classList.toggle('play')"
+                                                src="{{ Storage::url($audio->file) }}"
+                                                {{ $audio->loop ? 'loop' : '' }}>
+                                            </audio>
+
+
+                                            <div class="flex-1 truncate">
+                                                <div class="flex items-center space-x-3">
+                                                    <h3
+                                                        class="truncate text-sm font-medium text-gray-800 dark:text-gray-200">
+                                                        {{ $audio->name }}</h3>
+                                                    @if ($audio->loop)
+                                                        <span
+                                                            class="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Loop</span>
+                                                    @endif
+                                                </div>
+                                                <p class="mt-1 truncate text-sm text-gray-700 dark:text-gray-400">
+                                                    <!-- Platzhalter -->
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <input id="volume-{{ $i }}" data-slot="{{ $i }}"
+                                            class="volume-slider w-full block dark:bg-gray-900 dark:border-gray-900 border-2"
+                                            type="range" min="1" max="100"
+                                            value="{{ $audio->initial_volume * 100 }}">
+
+                                        <!-- Progressbar -->
+                                        <div class="bg-emerald-700 w-0"
+                                            style="height: 6px; transition: width 0.2s linear">
+                                        </div>
+                                    </li>
+                                @elseif(!isset($audio))
+                                    <li class="col-span-1 rounded-lg dark:bg-gray-700 bg-white shadow opacity-25">
+
+                                        <div class="flex w-full items-center justify-between space-x-6 p-3">
+
+                                            <div data-slot="{{ $i }}"
+                                                class="play-button h-12 w-12 bg-gray-900 items-center justify-center flex rounded">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                                    fill="currentColor" class="bi bi-play" viewBox="0 0 16 16">
+                                                    <use href="#playSvgNormal"></use>
+                                                </svg>
+                                            </div>
+
+                                            <div class="flex-1 truncate">
+                                                <div class="flex items-center space-x-3">
+                                                    <h3
+                                                        class="truncate text-sm font-medium text-gray-800 dark:text-gray-200">
+                                                    </h3>
+                                                </div>
+                                                <p class="mt-1 truncate text-sm text-gray-700 dark:text-gray-400">
+                                                    <!-- Platzhalter -->
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <input class="w-full dark:bg-gray-900 dark:border-gray-900 border-2" disabled
+                                            type="range" min="1" max="100" value="50"
+                                            class="slider">
+
+                                        <div>
+                                        </div>
+                                    </li>
+                                @endif
+                            @endfor
+                        </ul>
+                    </div>
+
+
                 </div>
             </div>
         </div>
@@ -238,13 +494,43 @@
             volumeSlider.value = e.volume * 100;
         }
 
+        function updateSoundpadDisplay() {
+            document.getElementById("soundpad-one").style.display = "none";
+            document.getElementById("soundpad-two").style.display = "none";
+            document.getElementById("soundpad-three").style.display = "none";
+
+            if (document.getElementById("one").checked) {
+                document.getElementById("soundpad-one").style.display = "block";
+            } else if (document.getElementById("two").checked) {
+
+                document.getElementById("soundpad-two").style.display = "block";
+            } else if (document.getElementById("three").checked) {
+                document.getElementById("soundpad-three").style.display = "block";
+            }
+        }
+
+        function toggleGmMenu() {
+            document.getElementById('audio-list').classList.toggle('hidden')
+            document.getElementById('soundpad-menu').classList.toggle('hidden')
+        }
+
+        // Set initial soundpad display (first one)
+        updateSoundpadDisplay();
+
+        // Event Listeners for updating soundpad display
+        document.getElementById("one").addEventListener("change", updateSoundpadDisplay);
+        document.getElementById("two").addEventListener("change", updateSoundpadDisplay);
+        document.getElementById("three").addEventListener("change", updateSoundpadDisplay);
+
+
         document.querySelectorAll('.audio-control-button').forEach((button) => {
             button.addEventListener('click', async function() {
                 const buttonElement = this;
                 const slot = buttonElement.dataset.slot;
                 const action = buttonElement.dataset.action;
                 // Determine the action based on the current state
-                const nextAction = (action === 'play' && buttonElement.classList.contains('pausable')) ?
+                const nextAction = (action === 'play' && buttonElement.classList.contains(
+                        'pausable')) ?
                     'pause' :
                     (action === 'play' && !buttonElement.classList.contains('pausable')) ?
                     'stop' :
@@ -260,8 +546,9 @@
                         action: nextAction,
                         slot: slot,
                         roomSlug: getRoomSlug(),
-                        _token: document.querySelector('meta[name="csrf-token"]').getAttribute(
-                            'content'),
+                        _token: document.querySelector('meta[name="csrf-token"]')
+                            .getAttribute(
+                                'content'),
                     }).catch(function(error) {
                         console.log(error);
                     });

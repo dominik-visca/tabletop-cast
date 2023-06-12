@@ -10,6 +10,22 @@
             </div>
         </div>
         <div class="ml-4 mt-4 flex flex-shrink-0">
+            <div id="soundpad-menu">
+                <input class="hidden" id="one" name="group" type="radio" checked>
+                <input class="hidden" id="two" name="group" type="radio">
+                <input class="hidden" id="three" name="group" type="radio">
+                <div>
+                    <label
+                        class="relative ml-3 inline-flex items-center rounded-md bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
+                        id="one-tab" for="one">1</label>
+                    <label
+                        class="relative ml-3 inline-flex items-center rounded-md bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
+                        id="two-tab" for="two">2</label>
+                    <label
+                        class="relative ml-3 inline-flex items-center rounded-md bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
+                        id="three-tab" for="three">3</label>
+                </div>
+            </div>
         </div>
     </x-slot>
 
@@ -56,89 +72,276 @@
                     </form>
 
                     <!-- Audio Buttons -->
+                    <div id="soundpad-one" class="soundpad">
+                        <ul role="list"
+                            class="px-4 sm:px-6 lg:px-8 mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 
-                    <ul role="list"
-                        class="px-4 sm:px-6 lg:px-8 mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-
-                        @for ($i = 1; $i <= 27; $i++)
-                            <li class="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow">
-                                @php
-                                    $audio = $room->audios->where('slot', $i)->first();
-                                @endphp
-                                <div class="flex w-full items-center justify-between space-x-6 p-6">
-                                    <div class="flex-1 truncate">
-                                        <div class="flex items-center space-x-3">
-                                            <h3 class="truncate text-sm font-medium text-gray-900">
-                                                @if (isset($audio))
-                                                    {{ $audio->name }}
-                                                @else
-                                                    Slot nicht belegt
-                                                @endif
-                                            </h3>
+                            @for ($i = 1; $i <= 27; $i++)
+                                <li class="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow">
+                                    @php
+                                        $audio = $room->audios->where('slot', $i)->first();
+                                    @endphp
+                                    <div class="flex w-full items-center justify-between space-x-6 p-6">
+                                        <div class="flex-1 truncate">
+                                            <div class="flex items-center space-x-3">
+                                                <h3 class="truncate text-sm font-medium text-gray-900">
+                                                    @if (isset($audio))
+                                                        {{ $audio->name }}
+                                                    @else
+                                                        Slot nicht belegt
+                                                    @endif
+                                                </h3>
+                                            </div>
+                                            <p class="mt-1 truncate text-sm text-gray-500">Audio Slot
+                                                {{ $i }}
+                                            </p>
                                         </div>
-                                        <p class="mt-1 truncate text-sm text-gray-500">Audio Slot {{ $i }}
-                                        </p>
                                     </div>
-                                </div>
-                                <div>
-                                    <div class="-mt-px flex divide-x divide-gray-200">
-                                        @if (isset($audio))
-                                            <div class="flex w-0 flex-1">
-                                                <a href="{{ route('audios.edit', ['room' => $room, 'audio' => $audio]) }}"
-                                                    class="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
-                                                        height="16" fill="currentColor" class="bi bi-pencil-square"
-                                                        viewBox="0 0 16 16">
-                                                        <path
-                                                            d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                                        <path fill-rule="evenodd"
-                                                            d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-                                                    </svg>
-                                                    Bearbeiten
-                                                </a>
-                                            </div>
-                                            <!-- TODO: DELETE -->
-                                            <div class="-ml-px flex w-0 flex-1">
-                                                <a href="#"
-                                                    class="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
-                                                        height="16" fill="currentColor" class="bi bi-trash"
-                                                        viewBox="0 0 16 16">
-                                                        <path
-                                                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
-                                                        <path
-                                                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
-                                                    </svg>
-                                                    Löschen
-                                                </a>
-                                            </div>
-                                        @else
-                                            <div class="-ml-px flex w-0 flex-1">
-                                                <a href="{{ route('audios.create', ['room' => $room, 'slot' => $i]) }}"
-                                                    class="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
-                                                        height="16" fill="currentColor" class="bi bi-upload"
-                                                        viewBox="0 0 16 16">
-                                                        <path
-                                                            d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
-                                                        <path
-                                                            d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z" />
-                                                    </svg>
-                                                    Audioslot belegen
-                                                </a>
-                                            </div>
-                                        @endif
+                                    <div>
+                                        <div class="-mt-px flex divide-x divide-gray-200">
+                                            @if (isset($audio))
+                                                <div class="flex w-0 flex-1">
+                                                    <a href="{{ route('audios.edit', ['room' => $room, 'audio' => $audio]) }}"
+                                                        class="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                            height="16" fill="currentColor"
+                                                            class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                            <path fill-rule="evenodd"
+                                                                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                                        </svg>
+                                                        Bearbeiten
+                                                    </a>
+                                                </div>
+                                                <!-- TODO: DELETE -->
+                                                <div class="-ml-px flex w-0 flex-1">
+                                                    <a href="#"
+                                                        class="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                            height="16" fill="currentColor" class="bi bi-trash"
+                                                            viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
+                                                            <path
+                                                                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
+                                                        </svg>
+                                                        Löschen
+                                                    </a>
+                                                </div>
+                                            @else
+                                                <div class="-ml-px flex w-0 flex-1">
+                                                    <a href="{{ route('audios.create', ['room' => $room, 'slot' => $i]) }}"
+                                                        class="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                            height="16" fill="currentColor" class="bi bi-upload"
+                                                            viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                                                            <path
+                                                                d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z" />
+                                                        </svg>
+                                                        Audioslot belegen
+                                                    </a>
+                                                </div>
+                                            @endif
+                                        </div>
+
                                     </div>
+                                </li>
+                            @endfor
+                        </ul>
+                    </div>
 
-                                </div>
-                            </li>
-                        @endfor
+                    <div id="soundpad-two" class="soundpad">
+                        <ul role="list"
+                            class="px-4 sm:px-6 lg:px-8 mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 
+                            @for ($i = 28; $i <= 54; $i++)
+                                <li class="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow">
+                                    @php
+                                        $audio = $room->audios->where('slot', $i)->first();
+                                    @endphp
+                                    <div class="flex w-full items-center justify-between space-x-6 p-6">
+                                        <div class="flex-1 truncate">
+                                            <div class="flex items-center space-x-3">
+                                                <h3 class="truncate text-sm font-medium text-gray-900">
+                                                    @if (isset($audio))
+                                                        {{ $audio->name }}
+                                                    @else
+                                                        Slot nicht belegt
+                                                    @endif
+                                                </h3>
+                                            </div>
+                                            <p class="mt-1 truncate text-sm text-gray-500">Audio Slot
+                                                {{ $i }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="-mt-px flex divide-x divide-gray-200">
+                                            @if (isset($audio))
+                                                <div class="flex w-0 flex-1">
+                                                    <a href="{{ route('audios.edit', ['room' => $room, 'audio' => $audio]) }}"
+                                                        class="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                            height="16" fill="currentColor"
+                                                            class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                            <path fill-rule="evenodd"
+                                                                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                                        </svg>
+                                                        Bearbeiten
+                                                    </a>
+                                                </div>
+                                                <!-- TODO: DELETE -->
+                                                <div class="-ml-px flex w-0 flex-1">
+                                                    <a href="#"
+                                                        class="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                            height="16" fill="currentColor" class="bi bi-trash"
+                                                            viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
+                                                            <path
+                                                                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
+                                                        </svg>
+                                                        Löschen
+                                                    </a>
+                                                </div>
+                                            @else
+                                                <div class="-ml-px flex w-0 flex-1">
+                                                    <a href="{{ route('audios.create', ['room' => $room, 'slot' => $i]) }}"
+                                                        class="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                            height="16" fill="currentColor" class="bi bi-upload"
+                                                            viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                                                            <path
+                                                                d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z" />
+                                                        </svg>
+                                                        Audioslot belegen
+                                                    </a>
+                                                </div>
+                                            @endif
+                                        </div>
 
-                    </ul>
+                                    </div>
+                                </li>
+                            @endfor
+                        </ul>
+                    </div>
+
+                    <div id="soundpad-three" class="soundpad">
+                        <ul role="list"
+                            class="px-4 sm:px-6 lg:px-8 mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+
+                            @for ($i = 55; $i <= 81; $i++)
+                                <li class="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow">
+                                    @php
+                                        $audio = $room->audios->where('slot', $i)->first();
+                                    @endphp
+                                    <div class="flex w-full items-center justify-between space-x-6 p-6">
+                                        <div class="flex-1 truncate">
+                                            <div class="flex items-center space-x-3">
+                                                <h3 class="truncate text-sm font-medium text-gray-900">
+                                                    @if (isset($audio))
+                                                        {{ $audio->name }}
+                                                    @else
+                                                        Slot nicht belegt
+                                                    @endif
+                                                </h3>
+                                            </div>
+                                            <p class="mt-1 truncate text-sm text-gray-500">Audio Slot
+                                                {{ $i }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="-mt-px flex divide-x divide-gray-200">
+                                            @if (isset($audio))
+                                                <div class="flex w-0 flex-1">
+                                                    <a href="{{ route('audios.edit', ['room' => $room, 'audio' => $audio]) }}"
+                                                        class="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                            height="16" fill="currentColor"
+                                                            class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                            <path fill-rule="evenodd"
+                                                                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                                        </svg>
+                                                        Bearbeiten
+                                                    </a>
+                                                </div>
+                                                <!-- TODO: DELETE -->
+                                                <div class="-ml-px flex w-0 flex-1">
+                                                    <a href="#"
+                                                        class="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                            height="16" fill="currentColor" class="bi bi-trash"
+                                                            viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
+                                                            <path
+                                                                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
+                                                        </svg>
+                                                        Löschen
+                                                    </a>
+                                                </div>
+                                            @else
+                                                <div class="-ml-px flex w-0 flex-1">
+                                                    <a href="{{ route('audios.create', ['room' => $room, 'slot' => $i]) }}"
+                                                        class="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                            height="16" fill="currentColor" class="bi bi-upload"
+                                                            viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                                                            <path
+                                                                d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z" />
+                                                        </svg>
+                                                        Audioslot belegen
+                                                    </a>
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                    </div>
+                                </li>
+                            @endfor
+                        </ul>
+                    </div>
 
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        function updateSoundpadDisplay() {
+            document.getElementById("soundpad-one").style.display = "none";
+            document.getElementById("soundpad-two").style.display = "none";
+            document.getElementById("soundpad-three").style.display = "none";
+
+            if (document.getElementById("one").checked) {
+                document.getElementById("soundpad-one").style.display = "block";
+            } else if (document.getElementById("two").checked) {
+
+                document.getElementById("soundpad-two").style.display = "block";
+            } else if (document.getElementById("three").checked) {
+                document.getElementById("soundpad-three").style.display = "block";
+            }
+        }
+
+        // Set initial soundpad display (first one)
+        updateSoundpadDisplay();
+
+        // Event Listeners for updating soundpad display
+        document.getElementById("one").addEventListener("change", updateSoundpadDisplay);
+        document.getElementById("two").addEventListener("change", updateSoundpadDisplay);
+        document.getElementById("three").addEventListener("change", updateSoundpadDisplay);
+    </script>
 </x-app-layout>
