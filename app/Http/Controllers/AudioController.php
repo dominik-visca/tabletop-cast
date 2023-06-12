@@ -76,7 +76,7 @@ class AudioController extends Controller
 
         $request->validate([
             'name' => 'required|max:255',
-            'file' => 'file|mimes:audio/mpeg,mpga,mp3,wav,aac',
+            'file' => 'file|mimes:audio/mpeg,mpga,mp3,wav,aac,ogg,audio/mp4,audio/m4a',
             'initial_volume' => 'required|numeric|between:0,1',
             'loop' => 'boolean',
             'pausable' => 'boolean',
