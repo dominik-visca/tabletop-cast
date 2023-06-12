@@ -44,7 +44,7 @@
                         @for ($i = 1; $i <= 27; $i++)
                             @php
                                 $audio = $room->audios->where('slot', $i)->first();
-                            @endphp ?>
+                            @endphp
                             @if (isset($audio))
                                 <li class="col-span-1 rounded-lg dark:bg-gray-700 bg-white shadow">
 
