@@ -19,7 +19,8 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
                     <!-- Audio Edit -->
-                    <form class="px-4 sm:px-6 lg:px-8 mt-4" method="POST" action="{{ route('audios.update', ['audio' => $audio]) }}" enctype="multipart/form-data">
+                    <form class="px-4 sm:px-6 lg:px-8 mt-4" method="POST"
+                        action="{{ route('audios.update', ['audio' => $audio]) }}" enctype="multipart/form-data">
                         <div class="space-y-12">
                             <div class="border-b border-white/10 pb-12">
                                 @csrf
@@ -27,27 +28,40 @@
 
                                 <div class="mt-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                                     <div class="sm:col-span-6">
-                                        <label for="name" class="block text-sm font-medium leading-6 text-white">Name</label>
+                                        <label for="name"
+                                            class="block text-sm font-medium leading-6 text-white">Name</label>
                                         <div class="mt-2">
-                                            <div class="flex rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
-                                                <input type="text" name="name" id="name" value="{{ old('name', $audio->name) }}" autocomplete="name" class="flex-1 border-0 bg-transparent py-1.5 pl-1 text-white focus:ring-0 sm:text-sm sm:leading-6" placeholder="Name">
+                                            <div
+                                                class="flex rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
+                                                <input type="text" name="name" id="name"
+                                                    value="{{ old('name', $audio->name) }}" autocomplete="name"
+                                                    class="flex-1 border-0 bg-transparent py-1.5 pl-1 text-white focus:ring-0 sm:text-sm sm:leading-6"
+                                                    placeholder="Name">
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="sm:col-span-6">
-                                        <label for="file" class="block text-sm font-medium leading-6 text-white">Audiodatei</label>
-                                        <input type="file" class="form-control" id="file" name="file" @if(!$audio->file) required @endif >
-                                        @if($audio->file)
-                                        <p class="mt-3 text-sm leading-6 text-gray-400">Aktuell hochgeladene Datei: {{ $audio->file }}</p>
+                                        <label for="file"
+                                            class="block text-sm font-medium leading-6 text-white">Audiodatei</label>
+                                        <input type="file" class="form-control" id="file" name="file"
+                                            @if (!$audio->file) required @endif>
+                                        @if ($audio->file)
+                                            <p class="mt-3 text-sm leading-6 text-gray-400">Aktuell hochgeladene Datei:
+                                                {{ $audio->file }}</p>
                                         @endif
                                     </div>
 
                                     <div class="sm:col-span-6">
-                                        <label for="initial_volume" class="block text-sm font-medium leading-6 text-white">Lautstärke</label>
+                                        <label for="initial_volume"
+                                            class="block text-sm font-medium leading-6 text-white">Lautstärke</label>
                                         <div class="mt-2">
-                                            <div class="flex rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
-                                                <input type="range" step="0.01" min="0" max="1" name="initial_volume" id="initial_volume" value="{{ old('initial_volume', $audio->initial_volume) }}" class="flex-1 border-0 bg-transparent py-1.5 pl-1 text-white focus:ring-0 sm:text-sm sm:leading-6">
+                                            <div
+                                                class="flex rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
+                                                <input type="range" step="0.01" min="0" max="1"
+                                                    name="initial_volume" id="initial_volume"
+                                                    value="{{ old('initial_volume', $audio->initial_volume) }}"
+                                                    class="flex-1 border-0 bg-transparent py-1.5 pl-1 text-white focus:ring-0 sm:text-sm sm:leading-6">
                                             </div>
                                         </div>
                                     </div>
@@ -55,44 +69,58 @@
                                     <div class="sm:col-span-6">
 
                                         <fieldset class="mt-6">
-                                            <legend class="mb-2 text-sm font-semibold leading-6 text-white">Audioeinstellungen</legend>
+                                            <legend class="mb-2 text-sm font-semibold leading-6 text-white">
+                                                Audioeinstellungen</legend>
                                             <div class="space-y-2">
                                                 <div class="relative flex gap-x-3">
                                                     <div class="flex h-6 items-center">
-                                                        <input id="loop" name="loop" type="checkbox" {{ old('loop', $audio->loop) ? 'checked' : '' }} class="h-4 w-4 rounded border-white/10 bg-white/5 text-indigo-600 focus:ring-indigo-600 focus:ring-offset-gray-900">
+                                                        <input id="loop" name="loop" type="checkbox"
+                                                            {{ old('loop', $audio->loop) ? 'checked' : '' }}
+                                                            class="h-4 w-4 rounded border-white/10 bg-white/5 text-indigo-600 focus:ring-indigo-600 focus:ring-offset-gray-900">
                                                     </div>
                                                     <div class="text-sm leading-6">
-                                                        <label for="loop" class="font-medium text-white">Wiederholung/Loop</label>
+                                                        <label for="loop"
+                                                            class="font-medium text-white">Wiederholung/Loop</label>
                                                     </div>
                                                 </div>
                                                 <div class="relative flex gap-x-3">
                                                     <div class="flex h-6 items-center">
-                                                        <input id="pausable" name="pausable" type="checkbox" {{ old('pausable', $audio->pausable) ? 'checked' : '' }} class="h-4 w-4 rounded border-white/10 bg-white/5 text-indigo-600 focus:ring-indigo-600 focus:ring-offset-gray-900">
+                                                        <input id="pausable" name="pausable" type="checkbox"
+                                                            {{ old('pausable', $audio->pausable) ? 'checked' : '' }}
+                                                            class="h-4 w-4 rounded border-white/10 bg-white/5 text-indigo-600 focus:ring-indigo-600 focus:ring-offset-gray-900">
                                                     </div>
                                                     <div class="text-sm leading-6">
-                                                        <label for="pausable" class="font-medium text-white">Pause (statt Stop)</label>
+                                                        <label for="pausable" class="font-medium text-white">Pause
+                                                            (statt Stop)</label>
                                                     </div>
                                                 </div>
                                             </div>
                                         </fieldset>
 
                                         <fieldset class="mt-6">
-                                            <legend class="mb-2 text-sm font-semibold leading-6 text-white">Visualisierung</legend>
+                                            <legend class="mb-2 text-sm font-semibold leading-6 text-white">
+                                                Visualisierung</legend>
                                             <div class="space-y-2">
                                                 <div class="relative flex gap-x-3">
                                                     <div class="flex h-6 items-center">
-                                                        <input id="music" name="music" type="checkbox" {{ old('music', $audio->music) ? 'checked' : '' }} class="h-4 w-4 rounded border-white/10 bg-white/5 text-indigo-600 focus:ring-indigo-600 focus:ring-offset-gray-900">
+                                                        <input id="music" name="music" type="checkbox"
+                                                            {{ old('music', $audio->music) ? 'checked' : '' }}
+                                                            class="h-4 w-4 rounded border-white/10 bg-white/5 text-indigo-600 focus:ring-indigo-600 focus:ring-offset-gray-900">
                                                     </div>
                                                     <div class="text-sm leading-6">
-                                                        <label for="music" class="font-medium text-white">Musik</label>
+                                                        <label for="music"
+                                                            class="font-medium text-white">Musik</label>
                                                     </div>
                                                 </div>
                                                 <div class="relative flex gap-x-3">
                                                     <div class="flex h-6 items-center">
-                                                        <input id="ambience" name="ambience" type="checkbox" {{ old('ambience', $audio->ambience) ? 'checked' : '' }} class="h-4 w-4 rounded border-white/10 bg-white/5 text-indigo-600 focus:ring-indigo-600 focus:ring-offset-gray-900">
+                                                        <input id="ambience" name="ambience" type="checkbox"
+                                                            {{ old('ambience', $audio->ambience) ? 'checked' : '' }}
+                                                            class="h-4 w-4 rounded border-white/10 bg-white/5 text-indigo-600 focus:ring-indigo-600 focus:ring-offset-gray-900">
                                                     </div>
                                                     <div class="text-sm leading-6">
-                                                        <label for="ambience" class="font-medium text-white">Ambience</label>
+                                                        <label for="ambience"
+                                                            class="font-medium text-white">Ambience</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -100,19 +128,20 @@
                                     </div>
 
                                     @if ($errors->any())
-                                    <div class="alert alert-danger">
-                                        <ul>
-                                            @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
+                                        <div class="alert alert-danger">
+                                            <ul>
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
                                     @endif
                                 </div>
                             </div>
 
                             <div class="mt-6 flex items-center justify-end gap-x-6">
-                                <button class="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                                <button
+                                    class="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
                                     Aktualisieren
                                 </button>
                             </div>
