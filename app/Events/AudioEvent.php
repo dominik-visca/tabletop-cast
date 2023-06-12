@@ -17,17 +17,19 @@ class AudioEvent implements ShouldBroadcast
     public $action;
     public $slot;
     public $volume;
+    public $roomSlug;
 
-    public function __construct($action, $slot, $volume = 1)
+    public function __construct($roomSlug, $action, $slot, $volume = 1)
     {
-        $this->action = $action; // "play", "stop", or "volume"
+        $this->action = $action;
         $this->slot = $slot;
         $this->volume = $volume;
+        $this->roomSlug = $roomSlug;
     }
 
     public function broadcastOn()
     {
-        return new PresenceChannel("audio");
+        return new PresenceChannel("audio.room." . $this->roomSlug);
     }
 
     public function broadcastAs()

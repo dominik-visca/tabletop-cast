@@ -104,6 +104,6 @@ class AudioController extends Controller
     // Trigger Audio WebSocket Action
     public function audioAction(Request $request)
     {
-        event(new AudioEvent($request->action, $request->slot, $request->volume));
+        event(new AudioEvent($request->roomSlug, $request->action, $request->slot, $request->volume));
     }
 }

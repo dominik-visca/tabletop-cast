@@ -2,7 +2,7 @@
     <x-sprite-sheet />
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __($room->name) }} @livewire('user-counter')
+            {{ __($room->name) }} @livewire('user-counter', ['roomSlug' => $room->slug])
         </h2>
     </x-slot>
 
@@ -89,6 +89,11 @@
         </div>
     </div>
     <script>
+        function getRoomSlug() {
+            const path = window.location.pathname.split("/");
+            return path[path.length - 1];
+        }
+
         function makeSvg(id) {
             return `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-play" viewBox="0 0 16 16">
                         <use href="#${id}"></use>
@@ -171,6 +176,7 @@
                     axios.post("/audio/action", {
                         action: nextAction,
                         slot: slot,
+                        roomSlug: getRoomSlug(),
                         _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                     }).catch(function(error) {
                         console.log(error);
@@ -192,6 +198,7 @@
                     action: "volume",
                     volume: sliderElement.value / 100,
                     slot: slot,
+                    roomSlug: getRoomSlug(),
                     _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 }).catch(function(error) {
                     console.log(error);
@@ -210,7 +217,7 @@
 
             console.log("Loading WebSocket connection")
 
-            Echo.join('audio')
+            Echo.join(`audio.room.${getRoomSlug()}`)
                 .here((users) => {
                     Livewire.emit('refreshUserCount');
                 })
