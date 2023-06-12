@@ -46,7 +46,7 @@
                                 $audio = $room->audios->where('slot', $i)->first();
                             @endphp
                             @if (isset($audio))
-                                <li class="col-span-1 rounded-lg dark:bg-gray-700 bg-white shadow">
+                                <li class="col-span-1 rounded-t-lg dark:bg-gray-700 bg-white shadow">
 
                                     <div class="flex w-full items-center justify-between space-x-6 p-3">
 
@@ -99,11 +99,12 @@
                                     </div>
 
                                     <input id="volume-{{ $i }}" data-slot="{{ $i }}"
-                                        class="volume-slider w-full dark:bg-gray-900 dark:border-gray-900 border-2"
+                                        class="volume-slider w-full block dark:bg-gray-900 dark:border-gray-900 border-2"
                                         type="range" min="1" max="100"
                                         value="{{ $audio->initial_volume * 100 }}">
 
-                                    <div>
+                                    <!-- Progressbar -->
+                                    <div class="bg-emerald-700 w-0" style="height: 6px; transition: width 0.2s linear">
                                     </div>
                                 </li>
                             @elseif(!isset($audio))
@@ -132,8 +133,7 @@
                                     </div>
 
                                     <input class="w-full dark:bg-gray-900 dark:border-gray-900 border-2" disabled
-                                        type="range" min="1" max="100" value="50" class="slider"
-                                        id="myRange">
+                                        type="range" min="1" max="100" value="50" class="slider">
 
                                     <div>
                                     </div>
@@ -286,6 +286,14 @@
                 });
             })
         });
+
+        document.querySelectorAll('audio').forEach((audio) => {
+            audio.addEventListener("timeupdate", function() {
+                let progressbar = audio.parentElement.nextElementSibling.nextElementSibling;
+                let percentage = (audio.currentTime / audio.duration) * 100;
+                progressbar.style.width = percentage + "%";
+            })
+        })
 
         window.onload = function() {
             console.log("Setting initial volumes")
