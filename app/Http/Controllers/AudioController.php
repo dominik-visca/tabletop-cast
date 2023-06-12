@@ -31,7 +31,7 @@ class AudioController extends Controller
 
         $request->validate([
             'name' => 'required|max:255',
-            'file' => 'required|file|mimes:audio/mpeg,mpga,mp3,wav,aac,ogg,audio/mp4,audio/m4a',
+            'file' => 'required|file|mimetypes:audio/mpeg,audio/x-mpeg-3,audio/mpeg3,audio/mp3,mpga,mp3,wav,aac,audio/ogg,ogg,audio/mp4,audio/m4a|max:40000',
             'initial_volume' => 'required|numeric|between:0,1',
             'loop' => 'boolean',
             'pausable' => 'boolean',
@@ -76,7 +76,7 @@ class AudioController extends Controller
 
         $request->validate([
             'name' => 'required|max:255',
-            'file' => 'file|mimes:audio/mpeg,mpga,mp3,wav,aac,ogg,audio/mp4,audio/m4a',
+            'file' => 'required|file|mimetypes:audio/mpeg,audio/x-mpeg-3,audio/mpeg3,audio/mp3,mpga,mp3,wav,aac,audio/ogg,ogg,audio/mp4,audio/m4a|max:40000',
             'initial_volume' => 'required|numeric|between:0,1',
             'loop' => 'boolean',
             'pausable' => 'boolean',
