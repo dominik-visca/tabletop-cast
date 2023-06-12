@@ -57,7 +57,7 @@
                                     </button>
 
                                     <!-- it seems, the audio element here does not irritate the other elements -->
-                                    <audio style="display:none;" id="audio-{{ $i }}" playsinline controls preload="auto" data-initial-volume="{{$audio->initial_volume}}" onended="getElementById('audio-' + {{ $i }}).parentElement.parentElement.classList.toggle('play')" src="{{ Storage::url($audio->file) }}" {{ $audio->loop ? 'loop' : '' }}>
+                                    <audio style="display:none;" id="audio-{{ $i }}" playsinline controls preload="auto" data-type="{{ $audio->ambience ? 'ambience' : ($audio->music ? 'music' : 'normal') }}" data-initial-volume="{{$audio->initial_volume}}" onended="getElementById('audio-' + {{ $i }}).parentElement.parentElement.classList.toggle('play')" src="{{ Storage::url($audio->file) }}" {{ $audio->loop ? 'loop' : '' }}>
                                     </audio>
 
 
@@ -140,14 +140,35 @@
             }
         }
 
+        async function stopOtherMusicAudios(slot, buttonElement) {
+            let allMusicAudios = document.querySelectorAll('audio[data-type="music"]');
+            for (let audio of allMusicAudios) {
+                let audioButton = audio.previousElementSibling;
+                if (audioButton.dataset.slot !== slot) {
+                    if (!audio.paused) {
+                        let slot = audio.id.split('-')[1];
+                        await axios.post("/audio/action", {
+                            action: "stop",
+                            slot: slot,
+                            roomSlug: getRoomSlug(),
+                            _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        }).catch(function(error) {
+                            console.log(error);
+                        });
+                    }
+                }
+            }
+        }
+
         function processPlay(e) {
             let audioElement = document.getElementById('audio-' + e.slot);
             let button = audioElement.previousElementSibling;
 
             audioElement.play();
-            audioElement.parentElement.parentElement.classList.toggle("play")
+            audioElement.parentElement.parentElement.classList.add("play");
 
             setButtonState(button, 'play', button.dataset.type);
+            button.dataset.action = 'play';
         }
 
         function processPause(e) {
@@ -155,9 +176,10 @@
             let button = audioElement.previousElementSibling;
 
             audioElement.pause();
-            audioElement.parentElement.parentElement.classList.toggle("play")
+            audioElement.parentElement.parentElement.classList.remove("play")
 
             setButtonState(button, 'pause', button.dataset.type);
+            button.dataset.action = 'pause';
         }
 
         function processStop(e) {
@@ -166,9 +188,10 @@
 
             audioElement.pause();
             audioElement.currentTime = 0;
-            audioElement.parentElement.parentElement.classList.toggle("play")
+            audioElement.parentElement.parentElement.classList.remove("play")
 
             setButtonState(button, 'pause', button.dataset.type);
+            button.dataset.action = 'pause';
         }
 
         function processVolume(e) {
@@ -179,17 +202,20 @@
         }
 
         document.querySelectorAll('.audio-control-button').forEach((button) => {
-            button.addEventListener('click', function() {
+            button.addEventListener('click', async function() {
                 const buttonElement = this;
                 const slot = buttonElement.dataset.slot;
                 const action = buttonElement.dataset.action;
-
                 // Determine the action based on the current state
                 const nextAction = (action === 'play' && buttonElement.classList.contains('pausable')) ?
                     'pause' :
                     (action === 'play' && !buttonElement.classList.contains('pausable')) ?
                     'stop' :
                     'play';
+
+                if (nextAction === 'play' && buttonElement.dataset.type === 'music') {
+                    await stopOtherMusicAudios(slot, buttonElement);
+                }
 
                 if (nextAction) {
                     // Send AJAX request to the backend
@@ -201,12 +227,8 @@
                     }).catch(function(error) {
                         console.log(error);
                     });
-
-                    // Update the state of the button
-                    buttonElement.dataset.action = nextAction;
                 }
             })
-
         });
 
         document.querySelectorAll('.volume-slider').forEach((slider) => {
