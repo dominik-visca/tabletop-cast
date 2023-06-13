@@ -45,7 +45,7 @@
                                         <label for="file"
                                             class="block text-sm font-medium leading-6 text-white">Audiodatei (max. 40
                                             MB)</label>
-                                        <input type="fileInput" class="form-control" id="file" name="file"
+                                        <input type="file" class="form-control" id="fileInput" name="file"
                                             @if (!$audio->file) required @endif>
                                         @if ($audio->file)
                                             <p class="mt-3 text-sm leading-6 text-gray-400">Aktuell hochgeladene Datei:
