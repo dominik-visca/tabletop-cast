@@ -114,6 +114,11 @@
     </div>
 
     <script>
+        function toggleGmMenu() {
+            document.getElementById('audio-list').classList.toggle('hidden')
+            document.getElementById('soundpad-menu').classList.toggle('hidden')
+        }
+
         function getRoomSlug() {
             const path = window.location.pathname.split("/");
             return path[path.length - 1];
@@ -125,85 +130,92 @@
                     </svg>`;
         }
 
-        const playSvgNormal = makeSvg('playSvgNormal');
-        const playSvgAmbience = makeSvg('playSvgAmbience');
-        const playSvgMusic = makeSvg('playSvgMusic');
-        const pauseSvg = makeSvg('pauseSvg');
-        const stopSvg = makeSvg('stopSvg');
+        const playSvgNormal = makeSvg("playSvgNormal");
+        const playSvgAmbience = makeSvg("playSvgAmbience");
+        const playSvgMusic = makeSvg("playSvgMusic");
+        const pauseSvg = makeSvg("pauseSvg");
+        const stopSvg = makeSvg("stopSvg");
 
         function setButtonState(button, action, audioType) {
-            if (action === 'pause') {
-                if (audioType === 'ambience') {
+            if (action === "pause") {
+                if (audioType === "ambience") {
                     button.innerHTML = playSvgAmbience;
-                } else if (audioType === 'music') {
+                } else if (audioType === "music") {
                     button.innerHTML = playSvgMusic;
                 } else {
                     button.innerHTML = playSvgNormal;
                 }
-            } else if (action === 'play') {
-                button.innerHTML = button.classList.contains('pausable') ? pauseSvg : stopSvg;
+            } else if (action === "play") {
+                button.innerHTML = button.classList.contains("pausable") ?
+                    pauseSvg :
+                    stopSvg;
             }
         }
 
-        async function stopOtherMusicAudios(slot, buttonElement) {
+        async function stopOtherMusicAudios(slot) {
             let allMusicAudios = document.querySelectorAll('audio[data-type="music"]');
             for (let audio of allMusicAudios) {
                 let audioButton = audio.previousElementSibling;
                 if (audioButton.dataset.slot !== slot) {
                     if (!audio.paused) {
-                        let slot = audio.id.split('-')[1];
-                        await axios.post("/audio/action", {
-                            action: "stop",
-                            slot: slot,
-                            roomSlug: getRoomSlug(),
-                            _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        }).catch(function(error) {
-                            console.log(error);
-                        });
+                        let slot = audio.id.split("-")[1];
+                        await axios
+                            .post("/audio/action", {
+                                action: "stop",
+                                slot: slot,
+                                roomSlug: getRoomSlug(),
+                                _token: document
+                                    .querySelector('meta[name="csrf-token"]')
+                                    .getAttribute("content"),
+                            })
+                            .catch(function(error) {
+                                console.log(error);
+                            });
                     }
                 }
             }
         }
 
         function processPlay(e) {
-            let audioElement = document.getElementById('audio-' + e.slot);
+            let audioElement = document.getElementById("audio-" + e.slot);
             let button = audioElement.previousElementSibling;
 
             audioElement.play();
             audioElement.parentElement.parentElement.classList.add("play");
 
-            setButtonState(button, 'play', button.dataset.type);
-            button.dataset.action = 'play';
+            setButtonState(button, "play", button.dataset.type);
+            button.dataset.action = "play";
         }
 
         function processPause(e) {
-            let audioElement = document.getElementById('audio-' + e.slot);
+            let audioElement = document.getElementById("audio-" + e.slot);
             let button = audioElement.previousElementSibling;
 
             audioElement.pause();
-            audioElement.parentElement.parentElement.classList.remove("play")
+            audioElement.parentElement.parentElement.classList.remove("play");
 
-            setButtonState(button, 'pause', button.dataset.type);
-            button.dataset.action = 'pause';
+            setButtonState(button, "pause", button.dataset.type);
+            button.dataset.action = "pause";
         }
 
         function processStop(e) {
-            let audioElement = document.getElementById('audio-' + e.slot);
+            let audioElement = document.getElementById("audio-" + e.slot);
             let button = audioElement.previousElementSibling;
 
             audioElement.pause();
             audioElement.currentTime = 0;
-            audioElement.parentElement.parentElement.classList.remove("play")
+            audioElement.parentElement.parentElement.classList.remove("play");
 
-            setButtonState(button, 'pause', button.dataset.type);
-            button.dataset.action = 'pause';
+            setButtonState(button, "pause", button.dataset.type);
+            button.dataset.action = "pause";
         }
 
         function processVolume(e) {
-            let audioElement = document.getElementById('audio-' + e.slot);
-            let volumeSlider = document.getElementById('volume-' + e.slot);
+            let audioElement = document.getElementById("audio-" + e.slot);
+            let volumeSlider = document.getElementById("volume-" + e.slot);
             audioElement.volume = e.volume;
             volumeSlider.value = e.volume * 100;
+            console.log(audioElement.volume);
         }
 
         function updateSoundpadDisplay() {
@@ -214,122 +226,128 @@
             if (document.getElementById("one").checked) {
                 document.getElementById("soundpad-one").style.display = "block";
             } else if (document.getElementById("two").checked) {
-
                 document.getElementById("soundpad-two").style.display = "block";
             } else if (document.getElementById("three").checked) {
                 document.getElementById("soundpad-three").style.display = "block";
             }
         }
 
-        function toggleGmMenu() {
-            document.getElementById('audio-list').classList.toggle('hidden')
-            document.getElementById('soundpad-menu').classList.toggle('hidden')
-        }
-
         // Set initial soundpad display (first one)
         updateSoundpadDisplay();
 
         // Event Listeners for updating soundpad display
-        document.getElementById("one").addEventListener("change", updateSoundpadDisplay);
-        document.getElementById("two").addEventListener("change", updateSoundpadDisplay);
-        document.getElementById("three").addEventListener("change", updateSoundpadDisplay);
+        document
+            .getElementById("one")
+            .addEventListener("change", updateSoundpadDisplay);
+        document
+            .getElementById("two")
+            .addEventListener("change", updateSoundpadDisplay);
+        document
+            .getElementById("three")
+            .addEventListener("change", updateSoundpadDisplay);
 
-
-        document.querySelectorAll('.audio-control-button').forEach((button) => {
-            button.addEventListener('click', async function() {
+        document.querySelectorAll(".audio-control-button").forEach((button) => {
+            button.addEventListener("click", async function() {
                 const buttonElement = this;
                 const slot = buttonElement.dataset.slot;
                 const action = buttonElement.dataset.action;
                 // Determine the action based on the current state
-                const nextAction = (action === 'play' && buttonElement.classList.contains(
-                        'pausable')) ?
-                    'pause' :
-                    (action === 'play' && !buttonElement.classList.contains('pausable')) ?
-                    'stop' :
-                    'play';
+                const nextAction =
+                    action === "play" && buttonElement.classList.contains("pausable") ?
+                    "pause" :
+                    action === "play" &&
+                    !buttonElement.classList.contains("pausable") ?
+                    "stop" :
+                    "play";
 
-                if (nextAction === 'play' && buttonElement.dataset.type === 'music') {
+                if (nextAction === "play" && buttonElement.dataset.type === "music") {
                     await stopOtherMusicAudios(slot, buttonElement);
                 }
 
                 if (nextAction) {
                     // Send AJAX request to the backend
-                    axios.post("/audio/action", {
-                        action: nextAction,
-                        slot: slot,
-                        roomSlug: getRoomSlug(),
-                        _token: document.querySelector('meta[name="csrf-token"]')
-                            .getAttribute(
-                                'content'),
-                    }).catch(function(error) {
-                        console.log(error);
-                    });
+                    axios
+                        .post("/audio/action", {
+                            action: nextAction,
+                            slot: slot,
+                            roomSlug: getRoomSlug(),
+                            _token: document
+                                .querySelector('meta[name="csrf-token"]')
+                                .getAttribute("content"),
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                        });
                 }
-            })
+            });
         });
 
-        document.querySelectorAll('.volume-slider').forEach((slider) => {
-            slider.addEventListener('change', function() {
+        document.querySelectorAll(".volume-slider").forEach((slider) => {
+            slider.addEventListener("change", function() {
                 const sliderElement = this;
                 const slot = sliderElement.dataset.slot;
 
-                axios.post("/audio/action", {
-                    action: "volume",
-                    volume: sliderElement.value / 100,
-                    slot: slot,
-                    roomSlug: getRoomSlug(),
-                    _token: document.querySelector('meta[name="csrf-token"]').getAttribute(
-                        'content'),
-                }).catch(function(error) {
-                    console.log(error);
-                });
-            })
+                axios
+                    .post("/audio/action", {
+                        action: "volume",
+                        volume: sliderElement.value / 100,
+                        slot: slot,
+                        roomSlug: getRoomSlug(),
+                        _token: document
+                            .querySelector('meta[name="csrf-token"]')
+                            .getAttribute("content"),
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+            });
         });
 
-        document.querySelectorAll('audio').forEach((audio) => {
+        document.querySelectorAll("audio").forEach((audio) => {
             audio.addEventListener("timeupdate", function() {
-                let progressbar = audio.parentElement.nextElementSibling.nextElementSibling;
+                let progressbar =
+                    audio.parentElement.nextElementSibling.nextElementSibling;
                 let percentage = (audio.currentTime / audio.duration) * 100;
                 progressbar.style.width = percentage + "%";
-            })
-        })
+            });
+        });
 
         window.onload = function() {
-            console.log("Setting initial volumes")
+            console.log("Setting initial volumes");
             let audioElements = document.querySelectorAll("audio");
 
-            audioElements.forEach(audioElement => {
+            audioElements.forEach((audioElement) => {
                 let initialVolume = audioElement.getAttribute("data-initial-volume");
                 audioElement.volume = Number(initialVolume);
-            })
+            });
 
-            console.log("Loading WebSocket connection")
+            console.log("Loading WebSocket connection");
 
             Echo.join(`audio.room.${getRoomSlug()}`)
                 .here((users) => {
-                    Livewire.emit('refreshUserCount');
+                    Livewire.emit("refreshUserCount");
                 })
                 .joining((user) => {
-                    console.log(user.name + ' joined');
-                    Livewire.emit('refreshUserCount');
+                    console.log(user.name + " joined");
+                    Livewire.emit("refreshUserCount");
                 })
                 .leaving((user) => {
-                    console.log(user.name + ' left');
-                    Livewire.emit('refreshUserCount');
+                    console.log(user.name + " left");
+                    Livewire.emit("refreshUserCount");
                 })
-                .listen('.AudioEvent', (e) => {
-                    if (e.action === 'play') {
+                .listen(".AudioEvent", (e) => {
+                    if (e.action === "play") {
                         processPlay(e);
                     } else if (e.action === "pause") {
                         processPause(e);
-                    } else if (e.action === 'stop') {
+                    } else if (e.action === "stop") {
                         processStop(e);
-                    } else if (e.action === 'volume') {
+                    } else if (e.action === "volume") {
                         processVolume(e);
                     }
                 });
 
-            console.log("WebSocket connection ready")
-        }
+            console.log("WebSocket connection ready");
+        };
     </script>
 </x-app-layout>

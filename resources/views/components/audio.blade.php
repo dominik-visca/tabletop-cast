@@ -50,7 +50,7 @@
     </div>
 
     <input id="volume-{{ $i }}" data-slot="{{ $i }}"
-        class="volume-slider w-full block dark:bg-gray-900 dark:border-gray-900 border-2" type="range" min="1"
+        class="volume-slider w-full block dark:bg-gray-900 dark:border-gray-900 border-2" type="range" min="0"
         max="100" value="{{ $audio->initial_volume * 100 }}">
 
     <!-- Progressbar -->
