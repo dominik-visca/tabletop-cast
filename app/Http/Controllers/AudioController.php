@@ -31,13 +31,13 @@ class AudioController extends Controller
 
         $request->validate([
             'name' => 'required|max:255',
-            'file' => 'required|file|mimetypes:audio/mpeg,audio/x-mpeg-3,audio/mpeg3,audio/mp3,mpga,mp3,wav,aac,audio/ogg,ogg,audio/mp4,audio/m4a|max:40000',
+            'file' => 'required|file|mimetypes:audio/mpeg,audio/x-mpeg-3,audio/mpeg3,audio/mp3,mpga,mp3,wav,aac,audio/ogg,ogg,audio/mp4,audio/m4a|max:40960',
             'initial_volume' => 'required|numeric|between:0,1',
             'loop' => 'boolean',
             'pausable' => 'boolean',
             'music' => 'boolean',
             'ambience' => 'boolean',
-            'slot' => 'required|integer|between:0,29'
+            'slot' => 'required|integer|between:0,81'
         ]);
 
         $audioPath = $request->file('file')->store('audios', 'public');
@@ -76,7 +76,7 @@ class AudioController extends Controller
 
         $request->validate([
             'name' => 'required|max:255',
-            'file' => 'required|file|mimetypes:audio/mpeg,audio/x-mpeg-3,audio/mpeg3,audio/mp3,mpga,mp3,wav,aac,audio/ogg,ogg,audio/mp4,audio/m4a|max:40000',
+            'file' => 'required|file|mimetypes:audio/mpeg,audio/x-mpeg-3,audio/mpeg3,audio/mp3,mpga,mp3,wav,aac,audio/ogg,ogg,audio/mp4,audio/m4a|max:40960',
             'initial_volume' => 'required|numeric|between:0,1',
             'loop' => 'boolean',
             'pausable' => 'boolean',
