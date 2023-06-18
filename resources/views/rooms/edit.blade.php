@@ -69,7 +69,7 @@
                                 </div>
 
                                 @if ($errors->any())
-                                    <div class="sm:col-span-6">
+                                    <div class="sm:col-span-6 mt-6">
                                         <div class="rounded-md bg-red-50 p-4">
                                             <div class="flex">
                                                 <div class="flex-shrink-0">

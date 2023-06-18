@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\RoomServiceException;
 use App\Http\Requests\Room\UpdateRequest;
 use App\Http\Requests\Room\StoreRequest;
 use Illuminate\Http\RedirectResponse;
@@ -22,37 +23,61 @@ class RoomController extends Controller
 
     public function index(): View
     {
-        $rooms = $this->roomService->getAllRooms();
-        return view('rooms.index', compact('rooms'));
+        try {
+            $rooms = $this->roomService->getAllRooms();
+            return view('rooms.index', compact('rooms'));
+        } catch (RoomServiceException $e) {
+            return view('errors.custom', ['message' => $e->getMessage()]);
+        }
     }
 
     public function show(Room $room): View
     {
-        $audios = $this->roomService->getRoomAudios($room);
-        return view('rooms.show', compact('room', 'audios'));
+        try {
+            $audios = $this->roomService->getRoomAudios($room);
+            return view('rooms.show', compact('room', 'audios'));
+        } catch (RoomServiceException $e) {
+            return view('errors.custom', ['message' => $e->getMessage()]);
+        }
     }
 
     public function store(StoreRequest $request): RedirectResponse
     {
-        $this->roomService->createRoom($request->validated());
-        return redirect(route('rooms.index'));
+        try {
+            $this->roomService->createRoom($request->validated());
+            return redirect(route('rooms.index'));
+        } catch (RoomServiceException $e) {
+            return redirect()->back()->withErrors(['message' => $e->getMessage()]);
+        }
     }
 
     public function edit(Room $room): View
     {
-        $audios = $this->roomService->getSortedRoomAudios($room);
-        return view('rooms.edit', compact('room', 'audios'));
+        try {
+            $audios = $this->roomService->getSortedRoomAudios($room);
+            return view('rooms.edit', compact('room', 'audios'));
+        } catch (RoomServiceException $e) {
+            return view('errors.custom', ['message' => $e->getMessage()]);
+        }
     }
 
     public function update(UpdateRequest $request, Room $room): RedirectResponse
     {
-        $this->roomService->updateRoom($request->validated(), $room);
-        return redirect()->route('rooms.edit', ['room' => $room]);
+        try {
+            $this->roomService->updateRoom($request->validated(), $room);
+            return redirect()->route('rooms.edit', ['room' => $room]);
+        } catch (RoomServiceException $e) {
+            return redirect()->back()->withErrors(['message' => $e->getMessage()]);
+        }
     }
 
     public function destroy(Request $request, Room $room): RedirectResponse
     {
-        $this->roomService->deleteRoom($room);
-        return redirect()->route('rooms.index');
+        try {
+            $this->roomService->deleteRoom($room);
+            return redirect()->route('rooms.index');
+        } catch (RoomServiceException $e) {
+            return redirect()->back()->withErrors(['message' => $e->getMessage()]);
+        }
     }
 }
