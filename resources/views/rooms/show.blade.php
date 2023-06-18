@@ -215,7 +215,6 @@
             let volumeSlider = document.getElementById("volume-" + e.slot);
             audioElement.volume = e.volume;
             volumeSlider.value = e.volume * 100;
-            console.log(audioElement.volume);
         }
 
         function updateSoundpadDisplay() {
