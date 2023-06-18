@@ -159,16 +159,26 @@
                             </div>
 
                             <div class="mt-6 flex items-center justify-end gap-x-6">
-                                <button
+                                <x-danger-button form="delete-audio-form">
+                                    Löschen
+                                </x-danger-button>
+
+                                <x-secondary-button
+                                    type="submit"
                                     class="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
                                     Aktualisieren
-                                </button>
+                                </x-secondary-button>
                             </div>
 
 
                             <x-input-error :messages="$errors->get('message')" class="mt-2" />
                         </div>
 
+                    </form>
+
+                    <form id="delete-audio-form" method="post" action="{{ route('audios.destroy', ['audio' => $audio]) }}">
+                        @csrf
+                        @method('delete')
                     </form>
                 </div>
             </div>

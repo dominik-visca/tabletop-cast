@@ -8,10 +8,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
 
 use App\Models\Room;
-use App\Models\Audio;
 
 class RoomController extends Controller
 {
@@ -53,5 +51,12 @@ class RoomController extends Controller
         $room->update($request->validated());
 
         return redirect()->route('rooms.edit', ['room' => $room]);
+    }
+
+    public function destroy(Request $request, Room $room): RedirectResponse
+    {
+        $room->delete();
+
+        return redirect()->route('rooms.index');
     }
 }

@@ -58,10 +58,14 @@
                                     </div>
                                 </div>
                                 <div class="mt-6 flex items-center justify-end gap-x-6">
-                                    <button
+                                    <x-danger-button x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-room-deletion')">
+                                        {{ __('Löschen') }}</x-danger-button>
+
+                                    <x-secondary-button
+                                        type="submit"
                                         class="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
                                         Aktualisieren
-                                    </button>
+                                    </x-secondary-button>
                                 </div>
 
                                 @if ($errors->any())
@@ -95,6 +99,27 @@
                             </div>
                         </div>
                     </form>
+
+                    <x-modal name="confirm-room-deletion" focusable>
+                        <form method="post" action="{{ route('rooms.destroy', ['room' => $room]) }}">
+                            @csrf
+                            @method('delete')
+
+                            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                {{ __('Bist du sicher, dass du den Raum löschen willst?') }}
+                            </h2>
+
+                            <div class="mt-6 flex justify-end">
+                                <x-secondary-button x-on:click="$dispatch('close')">
+                                    {{ __('Abbrechen') }}
+                                </x-secondary-button>
+
+                                <x-danger-button class="ml-3">
+                                    {{ __('Raum löschen') }}
+                                </x-danger-button>
+                            </div>
+                        </form>
+                    </x-modal>
 
                     <!-- Audio Buttons -->
                     <div id="soundpad-one" class="soundpad">

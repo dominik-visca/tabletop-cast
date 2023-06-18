@@ -25,8 +25,9 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::resource("rooms", RoomController::class)->only(["index", "store"]);
-    Route::get('rooms/{room}', [RoomController::class, 'show'])->name("rooms.show");
+    Route::resource('rooms', RoomController::class)->only(['index', 'store']);
+    Route::get('rooms/{room}', [RoomController::class, 'show'])->name('rooms.show');
+    Route::delete('rooms/{room}', [RoomController::class, 'destroy'])->name('rooms.destroy');
     Route::get('rooms/{room}/edit', [RoomController::class, 'edit'])->name('rooms.edit');
     Route::patch('rooms/{room}', [RoomController::class, 'update'])->name('rooms.update');
 
