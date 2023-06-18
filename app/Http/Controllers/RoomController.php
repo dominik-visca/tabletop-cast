@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Room\UpdateRequest;
+use App\Http\Requests\Room\StoreRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -27,43 +29,11 @@ class RoomController extends Controller
         return view('rooms.show', compact('room', 'audios'));
     }
 
-    public function enter(Room $room)
-    {
-        return view('rooms.enter', ['room' => $room]);
-    }
-
-    public function authenticate(Request $request, Room $room)
-    {
-        if (!Hash::check($request->password, $room->password)) {
-            return redirect()->route('rooms.enter', ['room' => $room])
-                ->withErrors(['password' => 'Incorrect password']);
-        }
-
-        // Get the list of room IDs from the session, or initialize as an empty array
-        $accessibleRooms = $request->session()->get('accessible_rooms', []);
-
-        // Add the current room ID to the list
-        $accessibleRooms[] = $room->id;
-
-        // Store the updated list in the session
-        $request->session()->put('accessible_rooms', $accessibleRooms);
-        return redirect()->route('rooms.show', ['room' => $room]);
-    }
-
-    public function store(Request $request): RedirectResponse
+    public function store(StoreRequest $request): RedirectResponse
     {
         $slug = Str::slug($request->name);
 
-        $request->validate([
-            "name" => "required|unique:rooms,slug,$slug",
-            "password" => "required"
-        ]);
-
-        Room::create([
-            "name" => $request->name,
-            "slug" => $slug,
-            "password" => Hash::make($request->password),
-        ]);
+        Room::create(array_merge($request->validated(), ['slug' => $slug]));
 
         return redirect(route("rooms.index"));
     }
@@ -78,11 +48,10 @@ class RoomController extends Controller
         return view('rooms.edit', ['room' => $room, 'audios' => $audios]);
     }
 
-    public function update(Request $request, Room $room): RedirectResponse
+    public function update(UpdateRequest $request, Room $room): RedirectResponse
     {
-        $room->name = $request->input('name');
-        $room->save();
+        $room->update($request->validated());
 
-        return redirect()->route('rooms.show', ['room' => $room]);
+        return redirect()->route('rooms.edit', ['room' => $room]);
     }
 }

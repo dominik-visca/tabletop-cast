@@ -26,16 +26,6 @@ class UserCounter extends Component
         $this->usersCount = $info->user_count;
     }
 
-    public function userJoined()
-    {
-        $this->usersCount++;
-    }
-
-    public function userLeft()
-    {
-        $this->usersCount--;
-    }
-
     public function render()
     {
         $this->fetchUserCount();
