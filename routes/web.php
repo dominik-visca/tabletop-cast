@@ -32,6 +32,7 @@ Route::middleware('auth', 'verified')->group(function () {
 
     Route::post('rooms/{room}/audios', [AudioController::class, 'store'])->name('audios.store');
     Route::get('audios/{audio}/edit', [AudioController::class, 'edit'])->name('audios.edit');
+    Route::delete('audios/{audio}', [AudioController::class, 'destroy'])->name('audios.destroy');
     Route::get('rooms/{room}/audios/create/{slot}', [AudioController::class, 'create'])->name('audios.create');
     Route::patch('audios/{audio}', [AudioController::class, 'update'])->name('audios.update');
     Route::post('/audio/action', [AudioController::class, 'audioAction']);

@@ -17,7 +17,7 @@
         <div class="-mt-px flex divide-x divide-gray-200">
             <div class="-ml-px flex w-0 flex-1">
                 <a href="{{ route('audios.create', ['room' => $room, 'slot' => $i]) }}"
-                    class="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900 dark:text-gray-200">
+                    class="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-b-lg border border-transparent py-4 text-sm font-semibold text-gray-900 dark:text-gray-200 hover:bg-gray-600 hover:border-gray-300">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-upload" viewBox="0 0 16 16">
                         <path

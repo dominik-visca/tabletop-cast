@@ -76,8 +76,6 @@
 
                                 <div class="mt-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                                     <div class="sm:col-span-6">
-                                        <label for="name"
-                                            class="block text-sm font-medium leading-6 text-white">Name</label>
                                         <div class="mt-2">
                                             <div
                                                 class="flex rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
@@ -88,9 +86,8 @@
                                         </div>
                                     </div>
 
+                                    <!-- Password Input is hidden as it's no longer necessary but a dummy value is required by the db -->
                                     <div class="hidden sm:col-span-6">
-                                        <label for="password"
-                                            class="block text-sm font-medium leading-6 text-white">Passwort</label>
                                         <div class="mt-2">
                                             <div
                                                 class="flex rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">

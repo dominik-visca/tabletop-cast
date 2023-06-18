@@ -49,6 +49,14 @@ class AudioController extends Controller
         return redirect()->route('rooms.edit', ['room' => $audio->room]);
     }
 
+    public function destroy(Request $request, Audio $audio): RedirectResponse
+    {
+        Storage::disk('public')->delete($audio->file);
+        $audio->delete();
+
+        return redirect()->route('rooms.edit', ['room' => $audio->room]);
+    }
+
     public function audioAction(Request $request)
     {
         event(new AudioEvent($request->roomSlug, $request->action, $request->slot, $request->volume));
