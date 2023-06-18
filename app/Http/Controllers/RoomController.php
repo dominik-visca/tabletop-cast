@@ -6,6 +6,7 @@ use App\Http\Requests\Room\UpdateRequest;
 use App\Http\Requests\Room\StoreRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
 
@@ -55,6 +56,11 @@ class RoomController extends Controller
 
     public function destroy(Request $request, Room $room): RedirectResponse
     {
+        // First delete audio files
+        foreach ($room->audios as $audio) {
+            Storage::disk('public')->delete($audio->file);
+        }
+        
         $room->delete();
 
         return redirect()->route('rooms.index');
