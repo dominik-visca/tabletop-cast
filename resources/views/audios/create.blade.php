@@ -165,7 +165,7 @@
 
     <script>
         document.getElementById("fileInput").addEventListener("change", function(e) {
-            var size = this.files[0].size / 1024 / 1024; // in MB
+            const size = this.files[0].size / 1024 / 1024; // in MB
             if (size > 40) {
                 alert("Datei darf nicht größer als 40 MB sein.");
                 this.value = ""; // clear the input

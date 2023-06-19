@@ -4,6 +4,7 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 use App\Models\Room;
+use App\Policies\AudioPolicy;
 use App\Policies\RoomPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -16,6 +17,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Room::class => RoomPolicy::class,
+        Audio::class => AudioPolicy::class,
     ];
 
     /**

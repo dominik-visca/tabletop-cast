@@ -5,13 +5,17 @@ namespace App\Services;
 use App\Exceptions\RoomServiceException;
 use App\Models\Room;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class RoomService
 {
-    public function getAllRooms()
+    /**
+     * @throws RoomServiceException
+     */
+    public function getAllRooms(): Collection
     {
         try {
             return Room::all();
@@ -21,6 +25,9 @@ class RoomService
         }
     }
 
+    /**
+     * @throws RoomServiceException
+     */
     public function getRoomAudios(Room $room)
     {
         try {
@@ -31,7 +38,10 @@ class RoomService
         }
     }
 
-    public function createRoom($validatedData)
+    /**
+     * @throws RoomServiceException
+     */
+    public function createRoom($validatedData): void
     {
         try {
             $slug = Str::slug($validatedData['name']);
@@ -42,7 +52,10 @@ class RoomService
         }
     }
 
-    public function getSortedRoomAudios(Room $room)
+    /**
+     * @throws RoomServiceException
+     */
+    public function getSortedRoomAudios(Room $room): array
     {
         try {
             $audios = [];
@@ -57,7 +70,10 @@ class RoomService
         }
     }
 
-    public function updateRoom($validatedData, Room $room)
+    /**
+     * @throws RoomServiceException
+     */
+    public function updateRoom($validatedData, Room $room): void
     {
         try {
             $room->update($validatedData);
@@ -67,7 +83,10 @@ class RoomService
         }
     }
 
-    public function deleteRoom(Room $room)
+    /**
+     * @throws RoomServiceException
+     */
+    public function deleteRoom(Room $room): void
     {
         try {
             // First delete audio files
