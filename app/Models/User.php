@@ -42,4 +42,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function campaigns()
+    {
+        return $this->belongsToMany(Campaign::class, 'user_campaign_role')
+                    ->withPivot('role_id');
+    }
 }

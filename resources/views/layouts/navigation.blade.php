@@ -19,6 +19,9 @@
                         <x-nav-link :href="route('rooms.index')" :active="request()->routeIs('rooms.index')">
                             {{ __('Räume') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('campaigns.index')" :active="request()->routeIs('campaigns.index')">
+                            {{ __('Kampagnen') }}
+                        </x-nav-link>
                     </div>
                 </div>
 
@@ -85,6 +88,9 @@
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('rooms.index')" :active="request()->routeIs('rooms.index')">
                     {{ __('Räume') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('campaigns.index')" :active="request()->routeIs('campaigns.index')">
+                    {{ __('Kampagnen') }}
                 </x-responsive-nav-link>
             </div>
 

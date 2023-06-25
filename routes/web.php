@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AudioController;
+use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoomAudioController;
 use App\Http\Controllers\RoomController;
@@ -41,6 +42,9 @@ Route::middleware('auth', 'verified')->group(function () {
 
     Route::get('rooms/{room}/audios/create/{slot}', [RoomAudioController::class, 'create'])->name('audios.create');
     Route::post('rooms/{room}/audios', [RoomAudioController::class, 'store'])->name('audios.store');
+
+    Route::get('campaigns', [CampaignController::class, 'index'])->name('campaigns.index');
+
 });
 
 require __DIR__ . '/auth.php';

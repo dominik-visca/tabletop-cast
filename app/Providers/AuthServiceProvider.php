@@ -2,11 +2,12 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
+use App\Models\Audio;
 use App\Models\Room;
 use App\Policies\AudioPolicy;
 use App\Policies\RoomPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -26,5 +27,22 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
+
+        // Gate definitions
+        Gate::define('delete-project', function ($user, $campaign) {
+            $role = $user->campaigns()->where('campaign.id', $campaign->id)->first()->pivot->role->name;
+            return $role === 'Eigentümer';
+        });
+
+        Gate::define('edit-project', function ($user, $campaign) {
+            $role = $user->campaigns()->where('campaign.id', $campaign->id)->first()->pivot->role->name;
+            return $role === 'Eigentümer' || $role === 'Bearbeiter';
+        });
+
+        Gate::define('read-project', function ($user, $campaign) {
+            $role = $user->campaigns()->where('campaign.id', $campaign->id)->first()->pivot->role->name;
+            return $role === 'Eigentümer' || $role === 'Bearbeiter' || $role === 'Leser' || $role === 'Spieler';
+        });
+
     }
 }
