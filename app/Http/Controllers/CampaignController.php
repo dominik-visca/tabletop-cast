@@ -60,6 +60,7 @@ class CampaignController extends Controller
     public function show(Campaign $campaign): View
     {
         try {
+            $this->authorize('read-campaign', $campaign);
             return view('campaigns.show', compact('campaign'));
         } catch (CampaignServiceException $e) {
             return view('errors.custom', ['message' => $e->getMessage()]);

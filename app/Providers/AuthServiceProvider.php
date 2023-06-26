@@ -29,19 +29,37 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         // Gate definitions
-        Gate::define('delete-project', function ($user, $campaign) {
-            $role = $user->campaigns()->where('campaign.id', $campaign->id)->first()->pivot->role->name;
-            return $role === 'Eigentümer';
+        Gate::define('delete-campaign', function ($user, $campaign) {
+            $userCampaign = $user->campaigns()->where('campaign_id', $campaign->id)->first();
+
+            if ($userCampaign) {
+                $role = $userCampaign->role_name;
+                return $role === 'Eigentümer';
+            }
+
+            return false;
         });
 
-        Gate::define('edit-project', function ($user, $campaign) {
-            $role = $user->campaigns()->where('campaign.id', $campaign->id)->first()->pivot->role->name;
-            return $role === 'Eigentümer' || $role === 'Bearbeiter';
+        Gate::define('edit-campaign', function ($user, $campaign) {
+            $userCampaign = $user->campaigns()->where('campaign_id', $campaign->id)->first();
+
+            if ($userCampaign) {
+                $role = $userCampaign->role_name;
+                return $role === 'Eigentümer' || $role === 'Bearbeiter';
+            }
+
+            return false;
         });
 
-        Gate::define('read-project', function ($user, $campaign) {
-            $role = $user->campaigns()->where('campaign.id', $campaign->id)->first()->pivot->role->name;
-            return $role === 'Eigentümer' || $role === 'Bearbeiter' || $role === 'Leser' || $role === 'Spieler';
+        Gate::define('read-campaign', function ($user, $campaign) {
+            $userCampaign = $user->campaigns()->where('campaign_id', $campaign->id)->first();
+
+            if ($userCampaign) {
+                $role = $userCampaign->role_name;
+                return $role === 'Eigentümer' || $role === 'Bearbeiter' || $role === 'Leser' || $role === 'Spieler';
+            }
+
+            return false;
         });
 
     }
