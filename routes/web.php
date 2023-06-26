@@ -44,7 +44,8 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::post('rooms/{room}/audios', [RoomAudioController::class, 'store'])->name('audios.store');
 
     Route::get('campaigns', [CampaignController::class, 'index'])->name('campaigns.index');
-
+    Route::get('campaigns/{campaign}', [CampaignController::class, 'show'])->name('campaigns.show');
+    Route::post('campaigns', [CampaignController::class, 'store'])->name('campaigns.store');
 });
 
 require __DIR__ . '/auth.php';

@@ -7,6 +7,7 @@ use App\Http\Requests\Campaign\StoreRequest;
 use App\Http\Requests\Campaign\UpdateRequest;
 use App\Models\Campaign;
 use App\Services\CampaignService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 
@@ -43,17 +44,26 @@ class CampaignController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRequest $request)
+    public function store(StoreRequest $request): RedirectResponse
     {
-        //
+        try {
+            $this->campaignService->createCampaign($request);
+            return redirect(route('campaigns.index'));
+        } catch (CampaignServiceException $e) {
+            return redirect()->back()->withErrors(['message' => $e->getMessage()]);
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Campaign $campaign)
+    public function show(Campaign $campaign): View
     {
-        //
+        try {
+            return view('campaigns.show', compact('campaign'));
+        } catch (CampaignServiceException $e) {
+            return view('errors.custom', ['message' => $e->getMessage()]);
+        }
     }
 
     /**

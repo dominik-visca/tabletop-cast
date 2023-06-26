@@ -22,4 +22,17 @@ class CampaignService
             throw new CampaignServiceException('Failed to retrieve campaigns.', 0, $e);
         }
     }
+
+    /**
+     * @throws CampaignServiceException
+     */
+    public function createCampaign($request): void
+    {
+        try {
+            Campaign::create($request->validated());
+        } catch (Exception $e) {
+            Log::error('Campaign creation failed: ' . $e->getMessage());
+            throw new CampaignServiceException('Failed to create campaign.', 0, $e);
+        }
+    }
 }
