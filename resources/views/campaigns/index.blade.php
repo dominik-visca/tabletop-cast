@@ -17,7 +17,8 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+
+                    <div class="px-4 sm:px-6 lg:px-8 mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                         @foreach ($campaigns as $campaign)
                             <div class="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white dark:bg-gray-700 px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400">
                                 <div class="min-w-0 flex-1">
@@ -31,7 +32,7 @@
                         @endforeach
                     </div>
 
-                    <form class="mt-8" method="POST" action="{{ route('campaigns.store') }}">
+                    <form class="px-4 sm:px-6 lg:px-8 mt-8" method="POST" action="{{ route('campaigns.store') }}">
                         <div class="space-y-12">
                             <div class="border-t pt-4 border-white/10 pb-3">
                                 <h2 class="text-base font-semibold leading-7 text-white">Neue Kampagne erstellen</h2>
