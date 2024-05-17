@@ -1,0 +1,113 @@
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx.Dockerfile
+    volumes:
+      - public-volume:/var/www/public
+    restart: always
+    networks:
+      - traefik_proxy
+      - internal
+    labels:
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.tabletopcast-rtr.entrypoints=https"
+      - "traefik.http.routers.tabletopcast-rtr.rule=Host(`tabletopcast.dev.domnek.de`)"
+      - "traefik.http.routers.tabletopcast-rtr.tls=true"
+      - "traefik.http.routers.tabletopcast-rtr.tls.certresolver=lets-encrypt"
+      # Middlewares
+      - "traefik.http.routers.tabletopcast-rtr.middlewares=chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.tabletopcast-rtr.service=tabletopcast-svc"
+      - "traefik.http.services.tabletopcast-svc.loadbalancer.server.port=80"
+
+  php:
+    build:
+      context: .
+      dockerfile: php.Dockerfile
+    volumes:
+      - public-volume:/var/www/public
+      - storage:/var/www/storage/app
+      - .env:/var/www/.env
+    restart: always
+    command: php-fpm -y /usr/local/etc/php-fpm.conf -R
+    depends_on:
+      pgsql:
+        condition: service_healthy
+    networks:
+      - internal
+
+  php-worker:
+    build:
+      context: .
+      dockerfile: php.Dockerfile
+    volumes:
+      - public-volume:/var/www/public
+      - storage:/var/www/storage/app
+      - .env:/var/www/.env
+    restart: always
+    depends_on:
+      pgsql:
+        condition: service_healthy
+    command: php artisan queue:work --verbose --tries=3 --timeout=300
+    networks:
+      - internal
+
+  pgsql:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      PGUSER: ${DB_USERNAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+    volumes:
+      - 'pgsql:/var/lib/postgresql/data'
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-q", "-d", "tabletopcast", "-U", "tabletopcast"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: always
+    networks:
+      - internal
+
+  redis:
+    image: 'redis:alpine'
+    volumes:
+      - 'redis:/data'
+    restart: always
+    networks:
+      - internal
+
+  soketi:
+    image: 'quay.io/soketi/soketi:latest-16-alpine'
+    environment:
+      SOKETI_DEBUG: "0"
+    networks:
+      - internal
+      - traefik_proxy
+    labels:
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.soketi-rtr.entrypoints=https"
+      - "traefik.http.routers.soketi-rtr.rule=Host(`soketi.dev.domnek.de`)"
+      - "traefik.http.routers.soketi-rtr.tls=true"
+      - "traefik.http.routers.soketi-rtr.tls.certresolver=lets-encrypt"
+      # Middlewares
+      - "traefik.http.routers.soketi-rtr.middlewares=chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.soketi-rtr.service=soketi-svc"
+      - "traefik.http.services.soketi-svc.loadbalancer.server.port=6001"
+
+volumes:
+  pgsql:
+  redis:
+  public-volume:
+  storage:
+
+networks:
+  internal:
+    external: false
+  traefik_proxy:
+    external: true
