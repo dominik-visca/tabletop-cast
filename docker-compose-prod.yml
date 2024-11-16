@@ -2,10 +2,23 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: nginx.Dockerfile
+      dockerfile: docker/prod/Dockerfile
     volumes:
-      - public-volume:/var/www/public
+      - app-storage:/var/www/storage
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=pgsql
+      - DB_PORT=5432
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - RUN_SEEDER=${RUN_SEEDER:-false}
+      - PHP_POST_MAX_SIZE="100M"
+      - PHP_UPLOAD_MAX_FILE_SIZE="100M"
     restart: always
+    depends_on:
+      pgsql:
+        condition: service_healthy
     networks:
       - traefik_proxy
       - internal
@@ -13,7 +26,7 @@ services:
       - "traefik.enable=true"
       # HTTP Routers
       - "traefik.http.routers.tabletopcast-rtr.entrypoints=https"
-      - "traefik.http.routers.tabletopcast-rtr.rule=Host(`tabletopcast.dev.domnek.de`)"
+      - "traefik.http.routers.tabletopcast-rtr.rule=Host(`tabletopcast.domnek.de`)"
       - "traefik.http.routers.tabletopcast-rtr.tls=true"
       - "traefik.http.routers.tabletopcast-rtr.tls.certresolver=lets-encrypt"
       # Middlewares
@@ -21,38 +34,6 @@ services:
       # HTTP Services
       - "traefik.http.routers.tabletopcast-rtr.service=tabletopcast-svc"
       - "traefik.http.services.tabletopcast-svc.loadbalancer.server.port=80"
-
-  php:
-    build:
-      context: .
-      dockerfile: php.Dockerfile
-    volumes:
-      - public-volume:/var/www/public
-      - storage:/var/www/storage/app
-      - .env:/var/www/.env
-    restart: always
-    command: php-fpm -y /usr/local/etc/php-fpm.conf -R
-    depends_on:
-      pgsql:
-        condition: service_healthy
-    networks:
-      - internal
-
-  php-worker:
-    build:
-      context: .
-      dockerfile: php.Dockerfile
-    volumes:
-      - public-volume:/var/www/public
-      - storage:/var/www/storage/app
-      - .env:/var/www/.env
-    restart: always
-    depends_on:
-      pgsql:
-        condition: service_healthy
-    command: php artisan queue:work --verbose --tries=3 --timeout=300
-    networks:
-      - internal
 
   pgsql:
     image: postgres:16
@@ -64,18 +45,10 @@ services:
     volumes:
       - 'pgsql:/var/lib/postgresql/data'
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready", "-q", "-d", "tabletopcast", "-U", "tabletopcast"]
+      test: [ "CMD-SHELL", "pg_isready", "-q" ]
       interval: 5s
       timeout: 5s
       retries: 10
-    restart: always
-    networks:
-      - internal
-
-  redis:
-    image: 'redis:alpine'
-    volumes:
-      - 'redis:/data'
     restart: always
     networks:
       - internal
@@ -91,7 +64,7 @@ services:
       - "traefik.enable=true"
       # HTTP Routers
       - "traefik.http.routers.soketi-rtr.entrypoints=https"
-      - "traefik.http.routers.soketi-rtr.rule=Host(`soketi.dev.domnek.de`)"
+      - "traefik.http.routers.soketi-rtr.rule=Host(`soketi.domnek.de`)"
       - "traefik.http.routers.soketi-rtr.tls=true"
       - "traefik.http.routers.soketi-rtr.tls.certresolver=lets-encrypt"
       # Middlewares
@@ -102,9 +75,7 @@ services:
 
 volumes:
   pgsql:
-  redis:
-  public-volume:
-  storage:
+  app-storage:
 
 networks:
   internal:
