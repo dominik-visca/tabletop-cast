@@ -1,5 +1,5 @@
 services:
-  nginx:
+  app:
     build:
       context: .
       dockerfile: docker/prod/Dockerfile
@@ -13,8 +13,17 @@ services:
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
       - RUN_SEEDER=${RUN_SEEDER:-false}
-      - PHP_POST_MAX_SIZE="100M"
-      - PHP_UPLOAD_MAX_FILE_SIZE="100M"
+      - PHP_POST_MAX_SIZE=100M
+      - PHP_UPLOAD_MAX_FILE_SIZE=100M
+      - PUSHER_APP_ID=${PUSHER_APP_ID}
+      - PUSHER_APP_KEY=${PUSHER_APP_KEY}
+      - PUSHER_APP_SECRET=${PUSHER_APP_SECRET}
+      - PUSHER_APP_CLUSTER=${PUSHER_APP_CLUSTER}
+      - PUSHER_HOST=soketi.domnek.de
+      - PUSHER_HOST_FROM_CLIENT=soketi.domnek.de
+      - PUSHER_PORT=443
+      - PUSHER_SCHEME=https
+
     restart: always
     depends_on:
       pgsql:
@@ -25,15 +34,15 @@ services:
     labels:
       - "traefik.enable=true"
       # HTTP Routers
-      - "traefik.http.routers.tabletopcast-rtr.entrypoints=https"
-      - "traefik.http.routers.tabletopcast-rtr.rule=Host(`tabletopcast.domnek.de`)"
-      - "traefik.http.routers.tabletopcast-rtr.tls=true"
-      - "traefik.http.routers.tabletopcast-rtr.tls.certresolver=lets-encrypt"
+      - "traefik.http.routers.ttc-app-rtr.entrypoints=https"
+      - "traefik.http.routers.ttc-app-rtr.rule=Host(`tabletopcast.domnek.de`)"
+      - "traefik.http.routers.ttc-app-rtr.tls=true"
+      - "traefik.http.routers.ttc-app-rtr.tls.certresolver=lets-encrypt"
       # Middlewares
-      - "traefik.http.routers.tabletopcast-rtr.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.ttc-app-rtr.middlewares=chain-no-auth@file"
       # HTTP Services
-      - "traefik.http.routers.tabletopcast-rtr.service=tabletopcast-svc"
-      - "traefik.http.services.tabletopcast-svc.loadbalancer.server.port=80"
+      - "traefik.http.routers.ttc-app-rtr.service=ttc-app-svc"
+      - "traefik.http.services.ttc-app-svc.loadbalancer.server.port=8080"
 
   pgsql:
     image: postgres:16
@@ -42,6 +51,8 @@ services:
       PGUSER: ${DB_USERNAME}
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+    ports:
+      - 5555:5432
     volumes:
       - 'pgsql:/var/lib/postgresql/data'
     healthcheck:
@@ -63,15 +74,15 @@ services:
     labels:
       - "traefik.enable=true"
       # HTTP Routers
-      - "traefik.http.routers.soketi-rtr.entrypoints=https"
-      - "traefik.http.routers.soketi-rtr.rule=Host(`soketi.domnek.de`)"
-      - "traefik.http.routers.soketi-rtr.tls=true"
-      - "traefik.http.routers.soketi-rtr.tls.certresolver=lets-encrypt"
+      - "traefik.http.routers.ttc-soketi-rtr.entrypoints=https"
+      - "traefik.http.routers.ttc-soketi-rtr.rule=Host(`soketi.domnek.de`)"
+      - "traefik.http.routers.ttc-soketi-rtr.tls=true"
+      - "traefik.http.routers.ttc-soketi-rtr.tls.certresolver=lets-encrypt"
       # Middlewares
-      - "traefik.http.routers.soketi-rtr.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.ttc-soketi-rtr.middlewares=chain-no-auth@file"
       # HTTP Services
-      - "traefik.http.routers.soketi-rtr.service=soketi-svc"
-      - "traefik.http.services.soketi-svc.loadbalancer.server.port=6001"
+      - "traefik.http.routers.ttc-soketi-rtr.service=ttc-soketi-svc"
+      - "traefik.http.services.ttc-soketi-svc.loadbalancer.server.port=6001"
 
 volumes:
   pgsql:

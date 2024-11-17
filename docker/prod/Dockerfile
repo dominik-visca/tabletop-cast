@@ -1,5 +1,5 @@
 # Base PHP image with Composer installation
-FROM serversideup/php:8.3-fpm-nginx AS base
+FROM serversideup/php:8.2-fpm-nginx AS base
 WORKDIR /var/www/html
 
 USER root
@@ -16,17 +16,7 @@ RUN npm install
 RUN npm run build
 
 # Final image
-FROM serversideup/php:8.3-fpm-nginx
-
-LABEL org.opencontainers.image.title="Servo" \
-      org.opencontainers.image.description="Servo Core Application" \
-      org.opencontainers.image.authors="Dominik Warch <dominik.warch@geoventis.de>" \
-      org.opencontainers.image.vendor="Geoventis GmbH" \
-      org.opencontainers.image.version="${VERSION:-dev}" \
-      org.opencontainers.image.created="${BUILD_DATE}" \
-      org.opencontainers.image.source="https://git.geoventis.de/servo/servo-core" \
-      org.opencontainers.image.licenses="Proprietary" \
-      org.opencontainers.image.base.name="serversideup/php:8.3-fpm-nginx"
+FROM serversideup/php:8.2-fpm-nginx
 
 WORKDIR /var/www/html
 
@@ -57,8 +47,7 @@ COPY --from=base --chown=www-data:www-data /var/www/html .
 COPY --chown=www-data:www-data . .
 
 # Now run Filament upgrade and publish assets
-RUN composer dump-autoload && \
-    php artisan filament:upgrade
+RUN composer dump-autoload
 
 # Copy built assets
 COPY --from=static-assets --chown=www-data:www-data /app/public/build ./public/build
