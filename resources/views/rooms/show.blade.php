@@ -324,15 +324,15 @@
 
             Echo.join(`audio.room.${getRoomSlug()}`)
                 .here((users) => {
-                    Livewire.emit("refreshUserCount");
+                    Livewire.dispatch("refreshUserCount");
                 })
                 .joining((user) => {
                     console.log(user.name + " joined");
-                    Livewire.emit("refreshUserCount");
+                    Livewire.dispatch("refreshUserCount");
                 })
                 .leaving((user) => {
                     console.log(user.name + " left");
-                    Livewire.emit("refreshUserCount");
+                    Livewire.dispatch("refreshUserCount");
                 })
                 .listen(".AudioEvent", (e) => {
                     if (e.action === "play") {
