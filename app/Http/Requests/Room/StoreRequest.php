@@ -17,7 +17,9 @@ class StoreRequest extends FormRequest
 
     public function prepareForValidation()
     {
-        $slug = Str::slug($this->name);
+        $this->merge([
+            'slug' => Str::slug($this->name)
+        ]);
     }
 
     /**
@@ -28,7 +30,8 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => "required|unique:rooms,slug,$this->slug",
+            "name" => "required",
+            "slug" => "required|unique:rooms",
             "password" => "required"
         ];
     }
